@@ -19,18 +19,21 @@ export class ApiError extends Error {
 
 type ProjectResponse = { project: Project; message?: string; assetId?: string };
 
-const API_ORIGIN = (import.meta.env.VITE_CHWIT_API as string | undefined)?.replace(/\/$/, '') || 'http://127.0.0.1:8787';
+function resolveApiOrigin(): string {
+  const configured = (import.meta.env.VITE_CHWIT_API as string | undefined)?.trim().replace(/\/$/, '') ?? '';
+  if (import.meta.env.DEV) return configured || 'http://127.0.0.1:8787';
+  if (/^https:\/\//i.test(configured) && !/localhost|127\.0\.0\.1|\[::1\]/.test(configured)) return configured;
+  return '';
+}
+
+const API_ORIGIN = resolveApiOrigin();
 
 export function apiUrl(path: string): string {
   return `${API_ORIGIN}${path}`;
 }
 
 function apiUnreachable(): ApiError {
-  const host = typeof location === 'undefined' ? '' : location.hostname;
-  const localPage = host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
-  if (!localPage) {
-    return new ApiError('El navegador bloqueó este sitio al hablar con la API de tu computadora. Abrí el estudio en http://127.0.0.1:5173 con pnpm dev.', 0);
-  }
+  if (!API_ORIGIN) return new ApiError('La API de Chiwt no respondió en este sitio.', 0);
   return new ApiError(`La API de Chiwt no responde en ${API_ORIGIN}. Iniciá el servidor con pnpm dev.`, 0);
 }
 
@@ -101,7 +104,7 @@ export function mediaKind(file: File): 'video' | 'audio' | 'image' | null {
 function upload<T>(path: string, file: File, onProgress?: (percent: number) => void): Promise<T> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${API_ORIGIN}${path}`);
+    xhr.open('POST', apiUrl(path));
     xhr.setRequestHeader('content-type', contentType(file));
     xhr.setRequestHeader('x-filename', encodeURIComponent(file.name));
     xhr.upload.onprogress = (event) => {

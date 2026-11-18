@@ -3,6 +3,7 @@ import path from 'node:path';
 import { z } from 'zod';
 import type { Project } from '@chiwt/schema';
 import { projectSchema } from '@chiwt/schema';
+import { blobEnabled, deleteProjectBlob, listProjectIds, readProjectBlob, writeProjectBlob } from './blob.js';
 import { HttpError } from './http.js';
 
 export type ProjectEvent = { type: 'project'; project: Project } | { type: 'ping' };
@@ -72,7 +73,7 @@ export class ProjectStore {
 
   async list(): Promise<{ id: string; name: string; revision: number; updatedAt: string; duration: number; hasVideo: boolean }[]> {
     await this.init();
-    const entries = await readFileSafeDir(this.root);
+    const entries = blobEnabled() ? await listProjectIds() : await readFileSafeDir(this.root);
     const projects = [];
     for (const entry of entries) {
       try {
@@ -93,6 +94,14 @@ export class ProjectStore {
   }
 
   async read(id: string): Promise<Project> {
+    if (blobEnabled()) {
+      const raw = await readProjectBlob(id);
+      if (!raw) throw new HttpError(404, 'No existe ese proyecto.');
+      const project = projectSchema.parse(JSON.parse(raw));
+      await mkdir(this.dir(id), { recursive: true });
+      await writeFile(path.join(this.dir(id), 'project.json'), raw);
+      return project;
+    }
     try {
       const raw = await readFile(path.join(this.dir(id), 'project.json'), 'utf8');
       return projectSchema.parse(JSON.parse(raw));
@@ -118,14 +127,17 @@ export class ProjectStore {
   async remove(id: string): Promise<void> {
     return this.queue(id, async () => {
       await rm(this.dir(id), { recursive: true, force: true });
+      if (blobEnabled()) await deleteProjectBlob(id);
     });
   }
 
   private async write(project: Project): Promise<void> {
     const dest = path.join(this.dir(project.id), 'project.json');
     const tmp = `${dest}.${process.pid}.tmp`;
-    await writeFile(tmp, JSON.stringify(project, null, 2));
+    const json = JSON.stringify(project, null, 2);
+    await writeFile(tmp, json);
     await rename(tmp, dest);
+    if (blobEnabled()) await writeProjectBlob(project.id, json);
   }
 }
 
