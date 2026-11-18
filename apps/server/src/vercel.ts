@@ -8,12 +8,19 @@ const ready = store.init();
 const listener = getRequestListener(createApp(store).fetch);
 
 function apiUrl(url: string): string {
-  const queryAt = url.indexOf('?');
-  const path = queryAt === -1 ? url : url.slice(0, queryAt);
-  const query = queryAt === -1 ? '' : url.slice(queryAt);
+  const parsed = new URL(url, 'http://chiwt.local');
+  const forwarded = parsed.searchParams.get('__path');
+  if (forwarded) {
+    parsed.searchParams.delete('__path');
+    const suffix = forwarded.startsWith('/') ? forwarded : `/${forwarded}`;
+    const path = suffix === '/api' || suffix.startsWith('/api/') ? suffix : `/api${suffix}`;
+    const query = parsed.searchParams.toString();
+    return query ? `${path}?${query}` : path;
+  }
+  const path = parsed.pathname;
   if (path === '/api' || path.startsWith('/api/')) return url;
   const suffix = path.startsWith('/') ? path : `/${path}`;
-  return `/api${suffix}${query}`;
+  return `/api${suffix}${parsed.search}`;
 }
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {

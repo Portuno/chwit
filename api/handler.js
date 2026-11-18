@@ -51622,13 +51622,20 @@ var store = new ProjectStore("/tmp/chiwt");
 var ready = store.init();
 var listener = getRequestListener(createApp(store).fetch);
 function apiUrl(url) {
-  const queryAt = url.indexOf("?");
-  const path7 = queryAt === -1 ? url : url.slice(0, queryAt);
-  const query = queryAt === -1 ? "" : url.slice(queryAt);
+  const parsed = new URL(url, "http://chiwt.local");
+  const forwarded = parsed.searchParams.get("__path");
+  if (forwarded) {
+    parsed.searchParams.delete("__path");
+    const suffix2 = forwarded.startsWith("/") ? forwarded : `/${forwarded}`;
+    const path8 = suffix2 === "/api" || suffix2.startsWith("/api/") ? suffix2 : `/api${suffix2}`;
+    const query = parsed.searchParams.toString();
+    return query ? `${path8}?${query}` : path8;
+  }
+  const path7 = parsed.pathname;
   if (path7 === "/api" || path7.startsWith("/api/"))
     return url;
   const suffix = path7.startsWith("/") ? path7 : `/${path7}`;
-  return `/api${suffix}${query}`;
+  return `/api${suffix}${parsed.search}`;
 }
 async function handler(req, res) {
   await ready;

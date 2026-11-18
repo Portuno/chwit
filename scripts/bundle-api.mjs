@@ -12,7 +12,7 @@ const esbuild = require('esbuild');
 await esbuild.build({
   absWorkingDir: root,
   entryPoints: ['apps/server/dist/vercel.js'],
-  outfile: 'api/[...path].js',
+  outfile: 'api/handler.js',
   bundle: true,
   platform: 'node',
   format: 'cjs',

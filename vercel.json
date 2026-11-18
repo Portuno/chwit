@@ -5,8 +5,11 @@
   "buildCommand": "pnpm --filter @chiwt/schema build && pnpm --filter @chiwt/server build && node scripts/bundle-api.mjs && pnpm --filter @chiwt/studio build",
   "outputDirectory": "apps/studio/dist",
   "functions": {
-    "api/[...path].js": {
+    "api/handler.js": {
       "maxDuration": 300
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/handler?__path=:path*" }
+  ]
 }
