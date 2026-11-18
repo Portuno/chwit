@@ -19,8 +19,19 @@ export class ApiError extends Error {
 
 type ProjectResponse = { project: Project; message?: string; assetId?: string };
 
+const API_ORIGIN = (import.meta.env.VITE_CHWIT_API as string | undefined)?.replace(/\/$/, '') || 'http://127.0.0.1:8787';
+
+export function apiUrl(path: string): string {
+  return `${API_ORIGIN}${path}`;
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, init);
+  let response: Response;
+  try {
+    response = await fetch(apiUrl(url), init);
+  } catch {
+    throw new ApiError(`La API de Chiwt no responde en ${API_ORIGIN}. Iniciá el servidor con pnpm dev.`, 0);
+  }
   const data = await response.json().catch(() => null);
   if (!response.ok) {
     const message = data && typeof data.error === 'string' ? data.error : `Error ${response.status}`;
@@ -66,8 +77,6 @@ const FILE_MIME: Record<string, string> = {
   aif: 'audio/aiff',
   opus: 'audio/opus',
 };
-
-const API_ORIGIN = (import.meta.env.VITE_CHWIT_API as string | undefined)?.replace(/\/$/, '') || 'http://127.0.0.1:8787';
 
 export function mediaKind(file: File): 'video' | 'audio' | 'image' | null {
   if (file.type.startsWith('video/')) return 'video';

@@ -1,5 +1,6 @@
 import { activeAlert, activeSubtitle, chatMessagesAt, formatViewers, isLayerActiveAt, layerRotation, viewerCountAt, type Layer } from '@chiwt/schema';
 import { useEffect, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type RefObject } from 'react';
+import { apiUrl } from '@/lib/api';
 import { useStudio } from '@/lib/store';
 import QRCode from 'qrcode';
 
@@ -135,7 +136,7 @@ export function LayerView({ layer, projectId, currentTime, selected, frameRef, o
       )}
       {layer.type === 'watermark' && (
         layer.watermark?.assetId
-          ? <img src={`/api/projects/${projectId}/assets/${layer.watermark.assetId}`} alt="" draggable={false} className="w-full h-full object-contain" />
+          ? <img src={apiUrl(`/api/projects/${projectId}/assets/${layer.watermark.assetId}`)} alt="" draggable={false} crossOrigin="anonymous" className="w-full h-full object-contain" />
           : <div className="w-full h-full grid place-items-center text-[10px] uppercase tracking-wider text-white/40 border border-dashed border-white/20">Logo</div>
       )}
       {layer.type === 'qr' && <QrBox value={layer.qr?.target ?? ''} />}

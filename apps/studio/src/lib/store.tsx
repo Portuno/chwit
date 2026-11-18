@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AlertInput, LayerPatch, LayerType, LutData, ManualMessageInput, Project, SectorInput, SectorPatch } from '@chiwt/schema';
-import { api, mediaKind } from './api';
+import { api, apiUrl, mediaKind } from './api';
 
 type Summary = { id: string; name: string; revision: number; updatedAt: string; duration: number; hasVideo: boolean };
 
@@ -124,7 +124,7 @@ export function StudioProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!projectId) return;
-    const source = new EventSource(`/api/projects/${projectId}/events`);
+    const source = new EventSource(apiUrl(`/api/projects/${projectId}/events`));
     source.onmessage = (event) => {
       const data = JSON.parse(event.data) as { type: string; project?: Project; error?: string };
       if (data.type === 'project' && data.project) commit(data.project);

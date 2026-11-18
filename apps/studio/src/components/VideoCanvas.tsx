@@ -4,6 +4,7 @@ import { Pause, Play, Square, Upload } from 'lucide-react';
 import { LayerMenu, type LayerDraft } from '@/components/LayerMenu';
 import { LayerView } from '@/components/LayerView';
 import { formatClock } from '@/lib/format';
+import { apiUrl } from '@/lib/api';
 import { exportVideo } from '@/lib/exporter';
 import { useStudio } from '@/lib/store';
 
@@ -39,7 +40,7 @@ export function VideoCanvas() {
     const video = videoRef.current;
     if (!video || exporting) return;
     try {
-      const handle = exportVideo(video, project.layers, project.duration, studio.playbackRate, (assetId) => `/api/projects/${project.id}/assets/${assetId}`, setProgress);
+      const handle = exportVideo(video, project.layers, project.duration, studio.playbackRate, (assetId) => apiUrl(`/api/projects/${project.id}/assets/${assetId}`), setProgress);
       cancelRef.current = handle;
       setExporting(true);
       void handle.done.finally(() => {
@@ -67,7 +68,8 @@ export function VideoCanvas() {
             <video
               key={project.videoToken}
               ref={videoRef}
-              src={`/api/projects/${project.id}/video`}
+              src={apiUrl(`/api/projects/${project.id}/video`)}
+              crossOrigin="anonymous"
               className="w-full h-full bg-black"
               style={{ filter }}
               playsInline
