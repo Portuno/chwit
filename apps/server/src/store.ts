@@ -73,7 +73,8 @@ export class ProjectStore {
 
   async list(): Promise<{ id: string; name: string; revision: number; updatedAt: string; duration: number; hasVideo: boolean }[]> {
     await this.init();
-    const entries = blobEnabled() ? await listProjectIds() : await readFileSafeDir(this.root);
+    const fromBlob = blobEnabled() ? await listProjectIds() : null;
+    const entries = fromBlob ?? await readFileSafeDir(this.root);
     const projects = [];
     for (const entry of entries) {
       try {
@@ -96,11 +97,13 @@ export class ProjectStore {
   async read(id: string): Promise<Project> {
     if (blobEnabled()) {
       const raw = await readProjectBlob(id);
-      if (!raw) throw new HttpError(404, 'No existe ese proyecto.');
-      const project = projectSchema.parse(JSON.parse(raw));
-      await mkdir(this.dir(id), { recursive: true });
-      await writeFile(path.join(this.dir(id), 'project.json'), raw);
-      return project;
+      if (raw) {
+        const project = projectSchema.parse(JSON.parse(raw));
+        await mkdir(this.dir(id), { recursive: true });
+        await writeFile(path.join(this.dir(id), 'project.json'), raw);
+        return project;
+      }
+      if (blobEnabled()) throw new HttpError(404, 'No existe ese proyecto.');
     }
     try {
       const raw = await readFile(path.join(this.dir(id), 'project.json'), 'utf8');

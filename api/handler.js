@@ -51030,8 +51030,19 @@ var completeMultipartUpload3 = createCompleteMultipartUploadMethod({
 
 // apps/server/dist/blob.js
 var PREFIX = "chiwt/";
+var blobDown = false;
 function blobEnabled() {
+  if (blobDown)
+    return false;
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+function markBlobDown(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (/suspended|quota|limit/i.test(message)) {
+    blobDown = true;
+    return true;
+  }
+  return false;
 }
 function access() {
   if (process.env.BLOB_STORE_ID)
@@ -51050,31 +51061,45 @@ async function writeProjectBlob(id, json) {
       contentType: "application/json"
     });
   } catch (error) {
+    if (markBlobDown(error))
+      return;
     const message = error instanceof Error ? error.message : "no se pudo guardar";
     throw new HttpError(500, `No se pudo guardar el proyecto: ${message}`);
   }
 }
 async function readProjectBlob(id) {
-  const result = await get(pathname(id), { access: access(), useCache: false });
-  if (!result || result.statusCode !== 200 || !result.stream)
-    return null;
-  return new Response(result.stream).text();
+  try {
+    const result = await get(pathname(id), { access: access(), useCache: false });
+    if (!result || result.statusCode !== 200 || !result.stream)
+      return null;
+    return new Response(result.stream).text();
+  } catch (error) {
+    if (markBlobDown(error))
+      return null;
+    throw error;
+  }
 }
 async function listProjectIds() {
   const ids = [];
   let cursor;
-  do {
-    const page = await list({ prefix: PREFIX, cursor, limit: 1e3 });
-    for (const blob of page.blobs) {
-      const match2 = /^chiwt\/([0-9a-f-]{36})\/project\.json$/.exec(blob.pathname);
-      if (match2?.[1])
-        ids.push(match2[1]);
-    }
-    if (!page.hasMore || !page.cursor)
-      break;
-    cursor = page.cursor;
-  } while (cursor);
-  return ids;
+  try {
+    do {
+      const page = await list({ prefix: PREFIX, cursor, limit: 1e3 });
+      for (const blob of page.blobs) {
+        const match2 = /^chiwt\/([0-9a-f-]{36})\/project\.json$/.exec(blob.pathname);
+        if (match2?.[1])
+          ids.push(match2[1]);
+      }
+      if (!page.hasMore || !page.cursor)
+        break;
+      cursor = page.cursor;
+    } while (cursor);
+    return ids;
+  } catch (error) {
+    if (markBlobDown(error))
+      return null;
+    throw error;
+  }
 }
 async function deleteProjectBlob(id) {
   await del(pathname(id));
@@ -51997,7 +52022,8 @@ var ProjectStore = class {
   }
   async list() {
     await this.init();
-    const entries = blobEnabled() ? await listProjectIds() : await readFileSafeDir(this.root);
+    const fromBlob = blobEnabled() ? await listProjectIds() : null;
+    const entries = fromBlob ?? await readFileSafeDir(this.root);
     const projects = [];
     for (const entry of entries) {
       try {
@@ -52019,12 +52045,14 @@ var ProjectStore = class {
   async read(id) {
     if (blobEnabled()) {
       const raw2 = await readProjectBlob(id);
-      if (!raw2)
+      if (raw2) {
+        const project = projectSchema.parse(JSON.parse(raw2));
+        await (0, import_promises6.mkdir)(this.dir(id), { recursive: true });
+        await (0, import_promises6.writeFile)(import_node_path5.default.join(this.dir(id), "project.json"), raw2);
+        return project;
+      }
+      if (blobEnabled())
         throw new HttpError(404, "No existe ese proyecto.");
-      const project = projectSchema.parse(JSON.parse(raw2));
-      await (0, import_promises6.mkdir)(this.dir(id), { recursive: true });
-      await (0, import_promises6.writeFile)(import_node_path5.default.join(this.dir(id), "project.json"), raw2);
-      return project;
     }
     try {
       const raw2 = await (0, import_promises6.readFile)(import_node_path5.default.join(this.dir(id), "project.json"), "utf8");

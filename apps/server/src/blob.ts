@@ -2,9 +2,20 @@ import { del, get, list, put } from '@vercel/blob';
 import { HttpError } from './http.js';
 
 const PREFIX = 'chiwt/';
+let blobDown = false;
 
 export function blobEnabled(): boolean {
+  if (blobDown) return false;
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+
+function markBlobDown(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  if (/suspended|quota|limit/i.test(message)) {
+    blobDown = true;
+    return true;
+  }
+  return false;
 }
 
 function access(): 'public' | 'private' {
@@ -25,20 +36,27 @@ export async function writeProjectBlob(id: string, json: string): Promise<void> 
       contentType: 'application/json',
     });
   } catch (error) {
+    if (markBlobDown(error)) return;
     const message = error instanceof Error ? error.message : 'no se pudo guardar';
     throw new HttpError(500, `No se pudo guardar el proyecto: ${message}`);
   }
 }
 
 export async function readProjectBlob(id: string): Promise<string | null> {
-  const result = await get(pathname(id), { access: access(), useCache: false });
-  if (!result || result.statusCode !== 200 || !result.stream) return null;
-  return new Response(result.stream).text();
+  try {
+    const result = await get(pathname(id), { access: access(), useCache: false });
+    if (!result || result.statusCode !== 200 || !result.stream) return null;
+    return new Response(result.stream).text();
+  } catch (error) {
+    if (markBlobDown(error)) return null;
+    throw error;
+  }
 }
 
-export async function listProjectIds(): Promise<string[]> {
+export async function listProjectIds(): Promise<string[] | null> {
   const ids: string[] = [];
   let cursor: string | undefined;
+  try {
   do {
     const page = await list({ prefix: PREFIX, cursor, limit: 1000 });
     for (const blob of page.blobs) {
@@ -49,6 +67,10 @@ export async function listProjectIds(): Promise<string[]> {
     cursor = page.cursor;
   } while (cursor);
   return ids;
+  } catch (error) {
+    if (markBlobDown(error)) return null;
+    throw error;
+  }
 }
 
 export async function deleteProjectBlob(id: string): Promise<void> {
