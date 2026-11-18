@@ -6,8 +6,7 @@
   "outputDirectory": "apps/studio/dist",
   "functions": {
     "api/[...path].js": {
-      "maxDuration": 300,
-      "includeFiles": "apps/server/vercel-bundle.cjs"
+      "maxDuration": 300
     }
   }
 }

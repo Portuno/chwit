@@ -12,10 +12,11 @@ const esbuild = require('esbuild');
 await esbuild.build({
   absWorkingDir: root,
   entryPoints: ['apps/server/dist/vercel.js'],
-  outfile: 'apps/server/vercel-bundle.cjs',
+  outfile: 'api/[...path].js',
   bundle: true,
   platform: 'node',
   format: 'cjs',
   target: 'node22',
   legalComments: 'none',
+  footer: { js: 'module.exports = module.exports.default;' },
 });
