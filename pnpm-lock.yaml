@@ -205,6 +205,9 @@ importers:
       '@chiwt/schema':
         specifier: workspace:*
         version: link:../../packages/schema
+      '@vercel/blob':
+        specifier: ^2.9.0
+        version: 2.9.0
       lucide-react:
         specifier: ^0.554.0
         version: 0.554.0(react@19.3.1)

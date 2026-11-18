@@ -144,13 +144,51 @@ function contentType(file: File): string {
   return mimeFromName(file.name);
 }
 
+const FUNCTION_BODY_LIMIT = 4 * 1024 * 1024;
+
+function localDuration(file: File): Promise<number> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement('video');
+    const finish = (duration: number) => {
+      URL.revokeObjectURL(url);
+      resolve(Number.isFinite(duration) && duration > 0 ? duration : 0);
+    };
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => finish(video.duration);
+    video.onerror = () => finish(0);
+    video.src = url;
+  });
+}
+
+async function uploadVideo(id: string, file: File, onProgress?: (percent: number) => void): Promise<ProjectResponse> {
+  if (import.meta.env.DEV || file.size <= FUNCTION_BODY_LIMIT) {
+    return upload<ProjectResponse>(`/api/projects/${id}/video`, file, onProgress);
+  }
+  const { upload: uploadBlob } = await import('@vercel/blob/client');
+  const duration = await localDuration(file);
+  const ext = file.name.includes('.') ? file.name.slice(file.name.lastIndexOf('.')) : '';
+  const blob = await uploadBlob(`chiwt/${id}/${crypto.randomUUID()}${ext}`, file, {
+    access: 'public',
+    handleUploadUrl: apiUrl('/api/blob/client'),
+    multipart: true,
+    onUploadProgress: ({ percentage }) => onProgress?.(Math.min(100, Math.round(percentage))),
+  });
+  return request<ProjectResponse>(`/api/projects/${id}/video/remote`, json({
+    url: blob.url,
+    fileName: file.name,
+    mimeType: contentType(file),
+    duration,
+  }));
+}
+
 export const api = {
   health: () => request<{ status: string; nan: boolean }>('/api/healthz'),
   list: () => request<{ projects: { id: string; name: string; revision: number; updatedAt: string; duration: number; hasVideo: boolean }[] }>('/api/projects'),
   create: (name: string) => request<ProjectResponse>('/api/projects', json({ name })),
   get: (id: string) => request<ProjectResponse>(`/api/projects/${id}`),
   remove: (id: string) => request<{ ok: boolean }>(`/api/projects/${id}`, { method: 'DELETE' }),
-  uploadVideo: (id: string, file: File, onProgress?: (percent: number) => void) => upload<ProjectResponse>(`/api/projects/${id}/video`, file, onProgress),
+  uploadVideo: (id: string, file: File, onProgress?: (percent: number) => void) => uploadVideo(id, file, onProgress),
   uploadAsset: (id: string, file: File, onProgress?: (percent: number) => void) => upload<ProjectResponse>(`/api/projects/${id}/assets`, file, onProgress),
   renameVideo: (id: string, fileName: string) => request<ProjectResponse>(`/api/projects/${id}/video`, {
     method: 'PATCH',

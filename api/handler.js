@@ -6399,8 +6399,8 @@ var require_timing_safe_equal = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var node_crypto_1 = require("node:crypto");
-    var timingSafeEqual = node_crypto_1.timingSafeEqual;
-    exports2.default = timingSafeEqual;
+    var timingSafeEqual2 = node_crypto_1.timingSafeEqual;
+    exports2.default = timingSafeEqual2;
   }
 });
 
@@ -6427,9 +6427,9 @@ var require_webcrypto = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.isCryptoKey = void 0;
-    var crypto3 = require("node:crypto");
+    var crypto4 = require("node:crypto");
     var util2 = require("node:util");
-    var webcrypto = crypto3.webcrypto;
+    var webcrypto = crypto4.webcrypto;
     exports2.default = webcrypto;
     var isCryptoKey = (key) => util2.types.isCryptoKey(key);
     exports2.isCryptoKey = isCryptoKey;
@@ -8721,17 +8721,17 @@ var require_sign = __commonJS({
   "node_modules/.pnpm/jose@5.10.0/node_modules/jose/dist/node/cjs/runtime/sign.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var crypto3 = require("node:crypto");
+    var crypto4 = require("node:crypto");
     var node_util_1 = require("node:util");
     var dsa_digest_js_1 = require_dsa_digest();
     var hmac_digest_js_1 = require_hmac_digest();
     var node_key_js_1 = require_node_key();
     var get_sign_verify_key_js_1 = require_get_sign_verify_key();
-    var oneShotSign = (0, node_util_1.promisify)(crypto3.sign);
+    var oneShotSign = (0, node_util_1.promisify)(crypto4.sign);
     var sign = async (alg, key, data) => {
       const k = (0, get_sign_verify_key_js_1.default)(alg, key, "sign");
       if (alg.startsWith("HS")) {
-        const hmac = crypto3.createHmac((0, hmac_digest_js_1.default)(alg), k);
+        const hmac = crypto4.createHmac((0, hmac_digest_js_1.default)(alg), k);
         hmac.update(data);
         return hmac.digest();
       }
@@ -8746,20 +8746,20 @@ var require_verify = __commonJS({
   "node_modules/.pnpm/jose@5.10.0/node_modules/jose/dist/node/cjs/runtime/verify.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var crypto3 = require("node:crypto");
+    var crypto4 = require("node:crypto");
     var node_util_1 = require("node:util");
     var dsa_digest_js_1 = require_dsa_digest();
     var node_key_js_1 = require_node_key();
     var sign_js_1 = require_sign();
     var get_sign_verify_key_js_1 = require_get_sign_verify_key();
-    var oneShotVerify = (0, node_util_1.promisify)(crypto3.verify);
-    var verify = async (alg, key, signature, data) => {
+    var oneShotVerify = (0, node_util_1.promisify)(crypto4.verify);
+    var verify2 = async (alg, key, signature, data) => {
       const k = (0, get_sign_verify_key_js_1.default)(alg, key, "verify");
       if (alg.startsWith("HS")) {
         const expected = await (0, sign_js_1.default)(alg, k, data);
         const actual = signature;
         try {
-          return crypto3.timingSafeEqual(actual, expected);
+          return crypto4.timingSafeEqual(actual, expected);
         } catch {
           return false;
         }
@@ -8772,7 +8772,7 @@ var require_verify = __commonJS({
         return false;
       }
     };
-    exports2.default = verify;
+    exports2.default = verify2;
   }
 });
 
@@ -14729,11 +14729,11 @@ var require_util2 = __commonJS({
     var { isUint8Array } = require("node:util/types");
     var { webidl } = require_webidl();
     var supportedHashes = [];
-    var crypto3;
+    var crypto4;
     try {
-      crypto3 = require("node:crypto");
+      crypto4 = require("node:crypto");
       const possibleRelevantHashes = ["sha256", "sha384", "sha512"];
-      supportedHashes = crypto3.getHashes().filter((hash) => possibleRelevantHashes.includes(hash));
+      supportedHashes = crypto4.getHashes().filter((hash) => possibleRelevantHashes.includes(hash));
     } catch {
     }
     function responseURL(response) {
@@ -14745,17 +14745,17 @@ var require_util2 = __commonJS({
       if (!redirectStatusSet.has(response.status)) {
         return null;
       }
-      let location = response.headersList.get("location", true);
-      if (location !== null && isValidHeaderValue(location)) {
-        if (!isValidEncodedURL(location)) {
-          location = normalizeBinaryStringToUtf8(location);
+      let location2 = response.headersList.get("location", true);
+      if (location2 !== null && isValidHeaderValue(location2)) {
+        if (!isValidEncodedURL(location2)) {
+          location2 = normalizeBinaryStringToUtf8(location2);
         }
-        location = new URL(location, responseURL(response));
+        location2 = new URL(location2, responseURL(response));
       }
-      if (location && !location.hash) {
-        location.hash = requestFragment;
+      if (location2 && !location2.hash) {
+        location2.hash = requestFragment;
       }
-      return location;
+      return location2;
     }
     function isValidEncodedURL(url) {
       for (let i = 0; i < url.length; ++i) {
@@ -15006,7 +15006,7 @@ var require_util2 = __commonJS({
       }
     }
     function bytesMatch(bytes2, metadataList) {
-      if (crypto3 === void 0) {
+      if (crypto4 === void 0) {
         return true;
       }
       const parsedMetadata = parseMetadata(metadataList);
@@ -15021,7 +15021,7 @@ var require_util2 = __commonJS({
       for (const item of metadata) {
         const algorithm = item.algo;
         const expectedValue = item.hash;
-        let actualValue = crypto3.createHash(algorithm).update(bytes2).digest("base64");
+        let actualValue = crypto4.createHash(algorithm).update(bytes2).digest("base64");
         if (actualValue[actualValue.length - 1] === "=") {
           if (actualValue[actualValue.length - 2] === "=") {
             actualValue = actualValue.slice(0, -2);
@@ -16085,8 +16085,8 @@ var require_body = __commonJS({
     var { multipartFormDataParser } = require_formdata_parser();
     var random;
     try {
-      const crypto3 = require("node:crypto");
-      random = (max) => crypto3.randomInt(0, max);
+      const crypto4 = require("node:crypto");
+      random = (max) => crypto4.randomInt(0, max);
     } catch {
       random = (max) => Math.floor(Math.random(max));
     }
@@ -24249,7 +24249,7 @@ var require_fetch = __commonJS({
     function handleFetchDone(response) {
       finalizeAndReportTiming(response, "fetch");
     }
-    function fetch4(input, init = void 0) {
+    function fetch5(input, init = void 0) {
       webidl.argumentLengthCheck(arguments, 1, "globalThis.fetch");
       let p = createDeferredPromise();
       let requestObject;
@@ -25103,14 +25103,14 @@ var require_fetch = __commonJS({
               if (status < 200) {
                 return;
               }
-              let location = "";
+              let location2 = "";
               const headersList = new HeadersList();
               for (let i = 0; i < rawHeaders.length; i += 2) {
                 headersList.append(bufferToLowerCasedHeaderName(rawHeaders[i]), rawHeaders[i + 1].toString("latin1"), true);
               }
-              location = headersList.get("location", true);
+              location2 = headersList.get("location", true);
               const decoders = [];
-              const willFollow = location && request.redirect === "follow" && redirectStatusSet.has(status);
+              const willFollow = location2 && request.redirect === "follow" && redirectStatusSet.has(status);
               if (request.method !== "HEAD" && request.method !== "CONNECT" && !nullBodyStatus.includes(status) && !willFollow) {
                 const contentEncoding = headersList.get("content-encoding", true);
                 const codings = contentEncoding ? contentEncoding.toLowerCase().split(",") : [];
@@ -25204,7 +25204,7 @@ var require_fetch = __commonJS({
       }
     }
     module2.exports = {
-      fetch: fetch4,
+      fetch: fetch5,
       Fetch,
       fetching,
       finalizeAndReportTiming
@@ -27725,13 +27725,13 @@ var require_frame = __commonJS({
     "use strict";
     var { maxUnsigned16Bit } = require_constants5();
     var BUFFER_SIZE = 16386;
-    var crypto3;
+    var crypto4;
     var buffer = null;
     var bufIdx = BUFFER_SIZE;
     try {
-      crypto3 = require("node:crypto");
+      crypto4 = require("node:crypto");
     } catch {
-      crypto3 = {
+      crypto4 = {
         // not full compatibility, but minimum.
         randomFillSync: function randomFillSync(buffer2, _offset, _size) {
           for (let i = 0; i < buffer2.length; ++i) {
@@ -27744,7 +27744,7 @@ var require_frame = __commonJS({
     function generateMask() {
       if (bufIdx === BUFFER_SIZE) {
         bufIdx = 0;
-        crypto3.randomFillSync(buffer ??= Buffer.allocUnsafe(BUFFER_SIZE), 0, BUFFER_SIZE);
+        crypto4.randomFillSync(buffer ??= Buffer.allocUnsafe(BUFFER_SIZE), 0, BUFFER_SIZE);
       }
       return [buffer[bufIdx++], buffer[bufIdx++], buffer[bufIdx++], buffer[bufIdx++]];
     }
@@ -27816,9 +27816,9 @@ var require_connection = __commonJS({
     var { Headers: Headers2, getHeadersList } = require_headers();
     var { getDecodeSplit } = require_util2();
     var { WebsocketFrameSend } = require_frame();
-    var crypto3;
+    var crypto4;
     try {
-      crypto3 = require("node:crypto");
+      crypto4 = require("node:crypto");
     } catch {
     }
     function establishWebSocketConnection(url, protocols, client2, ws, onEstablish, options) {
@@ -27838,7 +27838,7 @@ var require_connection = __commonJS({
         const headersList = getHeadersList(new Headers2(options.headers));
         request.headersList = headersList;
       }
-      const keyValue = crypto3.randomBytes(16).toString("base64");
+      const keyValue = crypto4.randomBytes(16).toString("base64");
       request.headersList.append("sec-websocket-key", keyValue);
       request.headersList.append("sec-websocket-version", "13");
       for (const protocol of protocols) {
@@ -27868,7 +27868,7 @@ var require_connection = __commonJS({
             return;
           }
           const secWSAccept = response.headersList.get("Sec-WebSocket-Accept");
-          const digest = crypto3.createHash("sha1").update(keyValue + uid).digest("base64");
+          const digest = crypto4.createHash("sha1").update(keyValue + uid).digest("base64");
           if (secWSAccept !== digest) {
             failWebsocketConnection(ws, "Incorrect hash received in Sec-WebSocket-Accept header.");
             return;
@@ -29742,7 +29742,7 @@ var require_undici = __commonJS({
     module2.exports.setGlobalDispatcher = setGlobalDispatcher;
     module2.exports.getGlobalDispatcher = getGlobalDispatcher;
     var fetchImpl = require_fetch().fetch;
-    module2.exports.fetch = async function fetch4(init, options = void 0) {
+    module2.exports.fetch = async function fetch5(init, options = void 0) {
       try {
         return await fetchImpl(init, options);
       } catch (err) {
@@ -31379,8 +31379,8 @@ var Context = class {
   * })
   * ```
   */
-  redirect = (location, status) => {
-    const locationString = String(location);
+  redirect = (location2, status) => {
+    const locationString = String(location2);
     this.header("Location", !/[^\x00-\xFF]/.test(locationString) ? locationString : encodeURI(locationString));
     return this.newResponse(null, status ?? 302);
   };
@@ -36476,7 +36476,7 @@ var projectSchema = external_exports.object({
   video: external_exports.object({
     fileName: external_exports.string().min(1).max(240),
     mimeType: external_exports.string().min(1).max(120),
-    playbackFile: external_exports.string().min(1).max(240)
+    playbackFile: external_exports.string().min(1).max(2048)
   }).nullable(),
   assets: external_exports.record(external_exports.string(), assetSchema),
   transcript: external_exports.object({
@@ -37075,13 +37075,13 @@ function __classPrivateFieldGet(receiver, state, kind, f) {
 
 // node_modules/.pnpm/openai@6.49.0_zod@3.25.76/node_modules/openai/internal/utils/uuid.mjs
 var uuid4 = function() {
-  const { crypto: crypto3 } = globalThis;
-  if (crypto3?.randomUUID) {
-    uuid4 = crypto3.randomUUID.bind(crypto3);
-    return crypto3.randomUUID();
+  const { crypto: crypto4 } = globalThis;
+  if (crypto4?.randomUUID) {
+    uuid4 = crypto4.randomUUID.bind(crypto4);
+    return crypto4.randomUUID();
   }
   const u8 = new Uint8Array(1);
-  const randomByte = crypto3 ? () => crypto3.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
+  const randomByte = crypto4 ? () => crypto4.getRandomValues(u8)[0] : () => Math.random() * 255 & 255;
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) => (+c ^ randomByte() & 15 >> +c / 4).toString(16));
 };
 
@@ -38632,12 +38632,12 @@ var SUBJECT_TOKEN_TYPES = {
 };
 var TOKEN_EXCHANGE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange";
 var WorkloadIdentityAuth = class {
-  constructor(config, fetch4) {
+  constructor(config, fetch5) {
     this.cachedToken = null;
     this.refreshPromise = null;
     this.tokenExchangeUrl = "https://auth.openai.com/oauth/token";
     this.config = config;
-    this.fetch = fetch4 ?? getDefaultFetch();
+    this.fetch = fetch5 ?? getDefaultFetch();
   }
   async getToken() {
     if (!this.cachedToken || this.isTokenExpired(this.cachedToken)) {
@@ -38812,29 +38812,29 @@ function getName(value) {
   return (typeof value === "object" && value !== null && ("name" in value && value.name && String(value.name) || "url" in value && value.url && String(value.url) || "filename" in value && value.filename && String(value.filename) || "path" in value && value.path && String(value.path)) || "").split(/[\\/]/).pop() || void 0;
 }
 var isAsyncIterable = (value) => value != null && typeof value === "object" && typeof value[Symbol.asyncIterator] === "function";
-var maybeMultipartFormRequestOptions = async (opts, fetch4) => {
+var maybeMultipartFormRequestOptions = async (opts, fetch5) => {
   if (!hasUploadableValue(opts.body))
     return opts;
   if (hasStreamingUploadableValue(opts.body)) {
     return createStreamingFormRequestOptions(opts);
   }
-  return { ...opts, body: await createForm(opts.body, fetch4) };
+  return { ...opts, body: await createForm(opts.body, fetch5) };
 };
-var multipartFormRequestOptions = async (opts, fetch4) => {
+var multipartFormRequestOptions = async (opts, fetch5) => {
   if (hasStreamingUploadableValue(opts.body)) {
     return createStreamingFormRequestOptions(opts);
   }
-  return { ...opts, body: await createForm(opts.body, fetch4) };
+  return { ...opts, body: await createForm(opts.body, fetch5) };
 };
 var supportsFormDataMap = /* @__PURE__ */ new WeakMap();
 function supportsFormData(fetchObject) {
-  const fetch4 = typeof fetchObject === "function" ? fetchObject : fetchObject.fetch;
-  const cached = supportsFormDataMap.get(fetch4);
+  const fetch5 = typeof fetchObject === "function" ? fetchObject : fetchObject.fetch;
+  const cached = supportsFormDataMap.get(fetch5);
   if (cached)
     return cached;
   const promise = (async () => {
     try {
-      const FetchResponse = "Response" in fetch4 ? fetch4.Response : (await fetch4("data:,")).constructor;
+      const FetchResponse = "Response" in fetch5 ? fetch5.Response : (await fetch5("data:,")).constructor;
       const data = new FormData();
       if (data.toString() === await new FetchResponse(data).text()) {
         return false;
@@ -38844,11 +38844,11 @@ function supportsFormData(fetchObject) {
       return true;
     }
   })();
-  supportsFormDataMap.set(fetch4, promise);
+  supportsFormDataMap.set(fetch5, promise);
   return promise;
 }
-var createForm = async (body, fetch4) => {
-  if (!await supportsFormData(fetch4)) {
+var createForm = async (body, fetch5) => {
+  if (!await supportsFormData(fetch5)) {
     throw new TypeError("The provided fetch function does not support file uploads with the current global FormData class.");
   }
   const form = new FormData();
@@ -48850,813 +48850,6 @@ function formatTime(seconds) {
   return `${round3(seconds)}s`;
 }
 
-// apps/server/dist/app.js
-var GB = 1024 * 1024 * 1024;
-var MAX_VIDEO = 256 * GB;
-var MAX_IMAGE = 1 * GB;
-var MAX_AUDIO = 8 * GB;
-var IMAGE_EXT = {
-  "image/png": ".png",
-  "image/jpeg": ".jpg",
-  "image/webp": ".webp",
-  "image/gif": ".gif"
-};
-var AUDIO_EXT = {
-  "audio/mpeg": ".mp3",
-  "audio/mp3": ".mp3",
-  "audio/wav": ".wav",
-  "audio/x-wav": ".wav",
-  "audio/wave": ".wav",
-  "audio/mp4": ".m4a",
-  "audio/x-m4a": ".m4a",
-  "audio/aac": ".aac",
-  "audio/ogg": ".ogg",
-  "audio/flac": ".flac",
-  "audio/webm": ".weba",
-  "audio/aiff": ".aiff",
-  "audio/x-aiff": ".aiff",
-  "audio/opus": ".opus"
-};
-var EXT_KIND = {
-  ".png": { mime: "image/png", kind: "image" },
-  ".jpg": { mime: "image/jpeg", kind: "image" },
-  ".jpeg": { mime: "image/jpeg", kind: "image" },
-  ".webp": { mime: "image/webp", kind: "image" },
-  ".gif": { mime: "image/gif", kind: "image" },
-  ".mp4": { mime: "video/mp4", kind: "video" },
-  ".webm": { mime: "video/webm", kind: "video" },
-  ".mov": { mime: "video/quicktime", kind: "video" },
-  ".mkv": { mime: "video/x-matroska", kind: "video" },
-  ".avi": { mime: "video/x-msvideo", kind: "video" },
-  ".m4v": { mime: "video/mp4", kind: "video" },
-  ".mpg": { mime: "video/mpeg", kind: "video" },
-  ".mpeg": { mime: "video/mpeg", kind: "video" },
-  ".ts": { mime: "video/mp2t", kind: "video" },
-  ".mts": { mime: "video/mp2t", kind: "video" },
-  ".m2ts": { mime: "video/mp2t", kind: "video" },
-  ".wmv": { mime: "video/x-ms-wmv", kind: "video" },
-  ".flv": { mime: "video/x-flv", kind: "video" },
-  ".mp3": { mime: "audio/mpeg", kind: "audio" },
-  ".wav": { mime: "audio/wav", kind: "audio" },
-  ".m4a": { mime: "audio/mp4", kind: "audio" },
-  ".aac": { mime: "audio/aac", kind: "audio" },
-  ".ogg": { mime: "audio/ogg", kind: "audio" },
-  ".flac": { mime: "audio/flac", kind: "audio" },
-  ".weba": { mime: "audio/webm", kind: "audio" },
-  ".aiff": { mime: "audio/aiff", kind: "audio" },
-  ".aif": { mime: "audio/aiff", kind: "audio" },
-  ".opus": { mime: "audio/opus", kind: "audio" }
-};
-var VIDEO_EXT = {
-  "video/mp4": ".mp4",
-  "video/webm": ".webm",
-  "video/quicktime": ".mov",
-  "video/x-matroska": ".mkv",
-  "video/x-msvideo": ".avi",
-  "video/x-m4v": ".m4v",
-  "video/mpeg": ".mpg",
-  "video/mp2t": ".ts",
-  "video/x-ms-wmv": ".wmv",
-  "video/x-flv": ".flv"
-};
-function createApp(store2) {
-  const app = new Hono3();
-  app.use("*", async (c, next) => {
-    c.header("Access-Control-Allow-Origin", "*");
-    c.header("Access-Control-Allow-Headers", "content-type, x-filename");
-    c.header("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
-    c.header("Access-Control-Allow-Private-Network", "true");
-    if (c.req.method === "OPTIONS")
-      return c.body(null, 204);
-    await next();
-  });
-  app.onError((error, c) => {
-    if (error instanceof HttpError)
-      return c.json({ error: error.message }, error.status);
-    console.error(error);
-    return c.json({ error: "Error interno" }, 500);
-  });
-  app.get("/api/healthz", (c) => c.json({ status: "ok", nan: nanConfigured() }));
-  app.get("/api/projects", async (c) => c.json({ projects: await store2.list() }));
-  app.post("/api/projects", async (c) => {
-    const input = parse(external_exports.object({ name: external_exports.string().max(120).optional() }), await jsonBody(c));
-    const project = await store2.create(input.name ?? "Sin t\xEDtulo");
-    return c.json({ project, message: "Proyecto creado." }, 201);
-  });
-  app.get("/api/projects/:id", async (c) => c.json({ project: await store2.read(idOf(c)) }));
-  app.delete("/api/projects/:id", async (c) => {
-    await store2.remove(idOf(c));
-    return c.json({ ok: true });
-  });
-  app.get("/api/projects/:id/events", async (c) => {
-    const id = idOf(c);
-    const encoder = new TextEncoder();
-    let closed = false;
-    let unsubscribe = () => {
-    };
-    let timer;
-    const stop = () => {
-      if (closed)
-        return;
-      closed = true;
-      if (timer)
-        clearInterval(timer);
-      unsubscribe();
-    };
-    const stream = new ReadableStream({
-      async start(controller) {
-        const send = (data) => {
-          if (closed)
-            return;
-          try {
-            controller.enqueue(encoder.encode(`data: ${data}
-
-`));
-          } catch {
-            stop();
-          }
-        };
-        const finish = () => {
-          stop();
-          try {
-            controller.close();
-          } catch {
-          }
-        };
-        try {
-          send(JSON.stringify({ type: "project", project: await store2.read(id) }));
-        } catch (error) {
-          const message = error instanceof HttpError ? error.message : "No se pudo abrir el proyecto.";
-          send(JSON.stringify({ type: "error", error: message }));
-          finish();
-          return;
-        }
-        if (closed)
-          return;
-        unsubscribe = store2.subscribe(id, send);
-        timer = setInterval(() => send(JSON.stringify({ type: "ping" })), 15e3);
-        if (closed)
-          stop();
-        c.req.raw.signal.addEventListener("abort", finish);
-      },
-      cancel() {
-        stop();
-      }
-    });
-    return new Response(stream, {
-      headers: {
-        "content-type": "text/event-stream",
-        "cache-control": "no-cache",
-        connection: "keep-alive"
-      }
-    });
-  });
-  app.post("/api/projects/:id/video", async (c) => {
-    const id = idOf(c);
-    await store2.read(id);
-    const ext = videoExtension(mimeOf(c), fileName(c, ""));
-    if (!ext)
-      throw new HttpError(415, "Us\xE1 MP4, WebM, MOV, MKV o AVI.");
-    rejectLength(c, MAX_VIDEO);
-    const dir = store2.dir(id);
-    await (0, import_promises4.mkdir)(dir, { recursive: true });
-    const tmp = import_node_path4.default.join(dir, `.upload-${crypto.randomUUID()}${ext}`);
-    const original = fileName(c, `video${ext}`);
-    const named = import_node_path4.default.extname(original).toLowerCase() === ext ? original : `${original}${ext}`;
-    try {
-      await writeLimited(c.req.raw.body, tmp, MAX_VIDEO);
-      const project = await attachVideoFile(store2, id, tmp, named, true);
-      return c.json({ project, message: "Video cargado." });
-    } finally {
-      await (0, import_promises4.rm)(tmp, { force: true });
-    }
-  });
-  app.post("/api/projects/:id/video/import", async (c) => {
-    const id = idOf(c);
-    await store2.read(id);
-    const input = parse(external_exports.object({ path: external_exports.string().min(1) }), await jsonBody(c));
-    const resolved = import_node_path4.default.resolve(input.path);
-    const info = await (0, import_promises4.stat)(resolved).catch(() => null);
-    if (!info?.isFile())
-      throw new HttpError(400, "La ruta no es un archivo de video.");
-    if (info.size > MAX_VIDEO)
-      throw new HttpError(413, tooBig(MAX_VIDEO));
-    const project = await attachVideoFile(store2, id, resolved, import_node_path4.default.basename(resolved), false);
-    return c.json({ project, message: "Video importado." });
-  });
-  app.patch("/api/projects/:id/video", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({ fileName: external_exports.string() }), await jsonBody(c));
-    const project = await store2.update(id, (draft) => {
-      if (!draft.video)
-        throw new HttpError(400, "Este proyecto no tiene video.");
-      draft.video.fileName = displayName(input.fileName, 240);
-    });
-    return c.json({ project, message: "Nombre del video actualizado." });
-  });
-  app.get("/api/projects/:id/video", async (c) => {
-    const project = await store2.read(idOf(c));
-    if (!project.video)
-      throw new HttpError(404, "Este proyecto no tiene video.");
-    return serveFile(c, safeFile(store2.dir(project.id), project.video.playbackFile), project.video.mimeType);
-  });
-  app.post("/api/projects/:id/assets", async (c) => {
-    const id = idOf(c);
-    await store2.read(id);
-    const named = fileName(c, "archivo");
-    const kind = classifyAsset(mimeOf(c), named);
-    rejectLength(c, kind.limit);
-    const assetId = newId();
-    const saved = await saveAsset(store2, id, assetId, c.req.raw.body, kind, named);
-    return c.json({ project: saved.project, assetId, message: "Archivo incorporado al proyecto." });
-  });
-  app.post("/api/projects/:id/assets/import", async (c) => {
-    const id = idOf(c);
-    await store2.read(id);
-    const input = parse(external_exports.object({ path: external_exports.string().min(1) }), await jsonBody(c));
-    const resolved = import_node_path4.default.resolve(input.path);
-    const info = await (0, import_promises4.stat)(resolved).catch(() => null);
-    if (!info?.isFile())
-      throw new HttpError(400, "La ruta no es un archivo.");
-    const named = import_node_path4.default.basename(resolved);
-    const kind = classifyAsset("", named);
-    if (info.size > kind.limit)
-      throw new HttpError(413, tooBig(kind.limit));
-    const assetId = newId();
-    const file = `${assetId}${kind.ext}`;
-    const dir = import_node_path4.default.join(store2.dir(id), "assets");
-    await (0, import_promises4.mkdir)(dir, { recursive: true });
-    await (0, import_promises4.copyFile)(resolved, import_node_path4.default.join(dir, file));
-    const project = await rememberAsset(store2, id, assetId, file, kind.mime, kind.kind, named);
-    return c.json({ project, assetId, message: "Archivo incorporado al proyecto." });
-  });
-  app.patch("/api/projects/:id/assets/:assetId", async (c) => {
-    const id = idOf(c);
-    const assetId = c.req.param("assetId");
-    const input = parse(external_exports.object({ name: external_exports.string() }), await jsonBody(c));
-    const project = await store2.update(id, (draft) => {
-      const asset = assetId ? draft.assets[assetId] : void 0;
-      if (!asset)
-        throw new HttpError(404, "No existe ese archivo.");
-      if (asset.kind !== "video")
-        throw new HttpError(400, "Solo se le cambia el nombre a un video.");
-      asset.name = displayName(input.name, 160);
-    });
-    return c.json({ project, message: "Nombre del video actualizado." });
-  });
-  app.delete("/api/projects/:id/assets/:assetId", async (c) => {
-    const id = idOf(c);
-    const assetId = c.req.param("assetId");
-    const current = await store2.read(id);
-    const asset = assetId ? current.assets[assetId] : void 0;
-    if (!asset)
-      throw new HttpError(404, "No existe ese archivo.");
-    await (0, import_promises4.rm)(safeFile(import_node_path4.default.join(store2.dir(id), "assets"), asset.file), { force: true });
-    const project = await store2.update(id, (draft) => {
-      delete draft.assets[assetId];
-      for (const layer of draft.layers) {
-        if (layer.watermark?.assetId === assetId)
-          layer.watermark = { assetId: null };
-      }
-    });
-    return c.json({ project, message: "Archivo quitado del proyecto." });
-  });
-  app.post("/api/projects/:id/assets/:assetId/use-as-video", async (c) => {
-    const id = idOf(c);
-    const assetId = c.req.param("assetId");
-    const current = await store2.read(id);
-    const asset = assetId ? current.assets[assetId] : void 0;
-    if (!asset)
-      throw new HttpError(404, "No existe ese archivo.");
-    if (asset.kind !== "video")
-      throw new HttpError(400, "Ese archivo no es un video.");
-    const ext = import_node_path4.default.extname(asset.file);
-    const named = asset.name.toLowerCase().endsWith(ext.toLowerCase()) ? asset.name : `${asset.name}${ext}`;
-    const project = await attachVideoFile(store2, id, safeFile(import_node_path4.default.join(store2.dir(id), "assets"), asset.file), named, false);
-    return c.json({ project, message: "Ese video qued\xF3 como la l\xEDnea de tiempo." });
-  });
-  app.post("/api/projects/:id/logo", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({
-      assetId: external_exports.string().uuid().optional(),
-      start: external_exports.number().min(0).optional(),
-      end: external_exports.number().min(0).nullable().optional(),
-      spin: external_exports.boolean().optional(),
-      rotate: external_exports.number().min(-180).max(180).optional()
-    }), await jsonBody(c));
-    const project = await store2.update(id, (draft) => {
-      applyLogo(draft, input);
-    });
-    return c.json({ project, message: "Logo vinculado al proyecto." });
-  });
-  app.get("/api/projects/:id/assets/:assetId", async (c) => {
-    const project = await store2.read(idOf(c));
-    const assetId = c.req.param("assetId");
-    const asset = assetId ? project.assets[assetId] : void 0;
-    if (!asset)
-      throw new HttpError(404, "No existe ese archivo.");
-    return serveFile(c, safeFile(import_node_path4.default.join(store2.dir(project.id), "assets"), asset.file), asset.mimeType);
-  });
-  app.post("/api/projects/:id/layers", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({
-      type: layerTypeSchema,
-      name: external_exports.string().max(80).optional(),
-      ratePerMinute: external_exports.number().min(1).max(360).optional(),
-      instruction: external_exports.string().max(2e3).optional(),
-      lutPreset: external_exports.enum(["sepia", "contrast", "vintage", "noir", "cyberpunk"]).optional()
-    }), await jsonBody(c));
-    const project = await store2.update(id, (draft) => {
-      if (draft.layers.length >= 24)
-        throw new HttpError(400, "M\xE1ximo de 24 capas.");
-      draft.layers.push(createLayer(input.type, input));
-    });
-    return c.json({ project, message: "Capa agregada." });
-  });
-  app.patch("/api/projects/:id/layers/:layerId", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const patch = parse(layerPatchSchema, await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer) => {
-      const next = applyLayerPatch(layer, patch);
-      Object.assign(layer, next);
-    });
-    return c.json({ project, message: "Capa actualizada." });
-  });
-  app.delete("/api/projects/:id/layers/:layerId", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const project = await store2.update(id, (draft) => {
-      const before = draft.layers.length;
-      draft.layers = draft.layers.filter((layer) => layer.id !== layerId);
-      if (draft.layers.length === before)
-        throw new HttpError(404, "No existe esa capa.");
-    });
-    return c.json({ project, message: "Capa eliminada." });
-  });
-  app.post("/api/projects/:id/layers/:layerId/messages", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({ messages: external_exports.array(manualMessageInputSchema).min(1).max(200) }), await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      const stamped = input.messages.map((message, index) => stampManual(message, layer.chat.messages.length + index));
-      layer.chat.messages = [...layer.chat.messages, ...stamped].sort((a, b) => a.t - b.t).slice(0, 5e3);
-    });
-    return c.json({ project, message: "Mensajes manuales agregados." });
-  });
-  app.patch("/api/projects/:id/layers/:layerId/messages/:messageId", async (c) => {
-    const ids = messageIds(c);
-    const patch = parse(external_exports.object({
-      text: external_exports.string().min(1).max(300).optional(),
-      username: external_exports.string().min(1).max(40).optional(),
-      color: external_exports.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-      t: external_exports.number().min(0).optional(),
-      locked: external_exports.boolean().optional()
-    }).strict(), await jsonBody(c));
-    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      const message = layer.chat.messages.find((item) => item.id === ids.messageId);
-      if (!message)
-        throw new HttpError(404, "No existe ese mensaje.");
-      if (patch.text != null)
-        message.text = patch.text.trim();
-      if (patch.username != null)
-        message.username = patch.username.trim();
-      if (patch.color)
-        message.color = patch.color;
-      if (patch.t != null)
-        message.t = patch.t;
-      if (patch.locked != null)
-        message.locked = patch.locked;
-      const parsed = timedMessageSchema.safeParse(message);
-      if (!parsed.success)
-        throw new HttpError(400, "Mensaje inv\xE1lido.");
-      Object.assign(message, parsed.data);
-      layer.chat.messages.sort((a, b) => a.t - b.t);
-    });
-    return c.json({ project, message: "Mensaje actualizado." });
-  });
-  app.delete("/api/projects/:id/layers/:layerId/messages/:messageId", async (c) => {
-    const ids = messageIds(c);
-    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      const before = layer.chat.messages.length;
-      layer.chat.messages = layer.chat.messages.filter((message) => message.id !== ids.messageId);
-      if (layer.chat.messages.length === before)
-        throw new HttpError(404, "No existe ese mensaje.");
-    });
-    return c.json({ project, message: "Mensaje eliminado." });
-  });
-  app.post("/api/projects/:id/layers/:layerId/messages/lock", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({ from: external_exports.number().min(0), to: external_exports.number().min(0), locked: external_exports.boolean() }), await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      for (const message of layer.chat.messages) {
-        if (message.t >= input.from && message.t <= input.to)
-          message.locked = input.locked;
-      }
-    });
-    return c.json({ project, message: input.locked ? "Mensajes bloqueados." : "Mensajes desbloqueados." });
-  });
-  app.post("/api/projects/:id/layers/:layerId/sectors", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(sectorInputSchema, await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer, draft) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      if (input.end != null && input.end <= input.start)
-        throw new HttpError(400, "El sector termina antes de empezar.");
-      if (sectorsOverlap(layer.chat.sectors, input, draft.duration))
-        throw new HttpError(400, "Ese sector se superpone con otro.");
-      layer.chat.sectors.push({
-        id: newId(),
-        name: input.name,
-        start: input.start,
-        end: input.end,
-        instruction: input.instruction ?? "",
-        ratePerMinute: input.ratePerMinute
-      });
-      layer.chat.sectors.sort((a, b) => a.start - b.start);
-    });
-    return c.json({ project, message: "Sector creado." });
-  });
-  app.patch("/api/projects/:id/layers/:layerId/sectors/:sectorId", async (c) => {
-    const ids = sectorIds(c);
-    const patch = parse(external_exports.object({
-      name: external_exports.string().min(1).max(80).optional(),
-      start: external_exports.number().min(0).optional(),
-      end: external_exports.number().min(0).nullable().optional(),
-      instruction: external_exports.string().max(2e3).optional(),
-      ratePerMinute: external_exports.number().min(1).max(360).optional()
-    }).strict(), await jsonBody(c));
-    const project = await updateLayer(store2, ids.id, ids.layerId, (layer, draft) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      const sector = layer.chat.sectors.find((item) => item.id === ids.sectorId);
-      if (!sector)
-        throw new HttpError(404, "No existe ese sector.");
-      const next = { ...sector, ...removeUndefined2(patch) };
-      if (next.end != null && next.end <= next.start)
-        throw new HttpError(400, "El sector termina antes de empezar.");
-      if (sectorsOverlap(layer.chat.sectors, next, draft.duration))
-        throw new HttpError(400, "Ese sector se superpone con otro.");
-      Object.assign(sector, next);
-      layer.chat.sectors.sort((a, b) => a.start - b.start);
-    });
-    return c.json({ project, message: "Sector actualizado." });
-  });
-  app.delete("/api/projects/:id/layers/:layerId/sectors/:sectorId", async (c) => {
-    const ids = sectorIds(c);
-    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
-      if (!layer.chat)
-        throw new HttpError(400, "Esa capa no es un chat.");
-      const before = layer.chat.sectors.length;
-      layer.chat.sectors = layer.chat.sectors.filter((sector) => sector.id !== ids.sectorId);
-      if (layer.chat.sectors.length === before)
-        throw new HttpError(404, "No existe ese sector.");
-    });
-    return c.json({ project, message: "Sector eliminado." });
-  });
-  app.post("/api/projects/:id/layers/:layerId/generate-chat", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({
-      sectorId: external_exports.string().uuid().optional(),
-      instruction: external_exports.string().max(2e3).optional()
-    }), await jsonBody(c));
-    return c.json(await generateChat(store2, id, layerId, input));
-  });
-  app.post("/api/projects/:id/layers/:layerId/alerts", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({
-      mode: external_exports.enum(["append", "replace"]).default("append"),
-      events: external_exports.array(alertInputSchema).min(1).max(200)
-    }), await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer) => {
-      if (!layer.alerts)
-        throw new HttpError(400, "Esa capa no es de alertas.");
-      const events = input.events.map(toAlertEvent);
-      layer.alerts = (input.mode === "replace" ? events : [...layer.alerts, ...events]).sort((a, b) => a.t - b.t).slice(0, 500);
-    });
-    return c.json({ project, message: "Alertas programadas." });
-  });
-  app.delete("/api/projects/:id/layers/:layerId/alerts/:eventId", async (c) => {
-    const ids = eventIds(c);
-    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
-      if (!layer.alerts)
-        throw new HttpError(400, "Esa capa no es de alertas.");
-      const before = layer.alerts.length;
-      layer.alerts = layer.alerts.filter((event) => event.id !== ids.eventId);
-      if (layer.alerts.length === before)
-        throw new HttpError(404, "No existe esa alerta.");
-    });
-    return c.json({ project, message: "Alerta eliminada." });
-  });
-  app.post("/api/projects/:id/layers/:layerId/generate-alerts", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({
-      count: external_exports.number().int().min(1).max(30).optional(),
-      instruction: external_exports.string().max(2e3).optional()
-    }), await jsonBody(c));
-    return c.json(await generateAlerts(store2, id, layerId, input));
-  });
-  app.put("/api/projects/:id/layers/:layerId/subtitle-cues", async (c) => {
-    const { id, layerId } = layerIds(c);
-    const input = parse(external_exports.object({
-      cues: external_exports.array(external_exports.object({
-        id: external_exports.string().uuid().optional(),
-        text: external_exports.string().max(500),
-        start: external_exports.number().min(0),
-        end: external_exports.number().min(0)
-      })).max(2e3)
-    }), await jsonBody(c));
-    const project = await updateLayer(store2, id, layerId, (layer) => {
-      if (!layer.subtitle)
-        throw new HttpError(400, "Esa capa no es de subt\xEDtulos.");
-      layer.subtitle = { ...layer.subtitle, cues: normalizeSubtitleCues(input.cues) };
-    });
-    return c.json({ project, message: "Subt\xEDtulos actualizados." });
-  });
-  app.post("/api/projects/:id/transcribe", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({ force: external_exports.boolean().optional() }), await jsonBody(c));
-    return c.json(await transcribeProject(store2, id, input.force ?? false));
-  });
-  app.post("/api/projects/:id/prompt", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({
-      prompt: external_exports.string().min(1).max(2e3),
-      history: external_exports.array(external_exports.object({
-        role: external_exports.enum(["user", "agent"]),
-        text: external_exports.string().max(800)
-      })).max(12).optional()
-    }), await jsonBody(c));
-    return c.json(await applyPrompt(store2, id, input.prompt, input.history ?? []));
-  });
-  app.post("/api/projects/:id/livestream", async (c) => {
-    const id = idOf(c);
-    const input = parse(external_exports.object({
-      lut: external_exports.enum(["sepia", "contrast", "vintage", "noir", "cyberpunk"]).optional(),
-      ratePerMinute: external_exports.number().min(1).max(360).optional(),
-      instruction: external_exports.string().max(2e3).optional()
-    }), await jsonBody(c));
-    const project = await store2.update(id, (draft) => applyLivestream(draft, input));
-    return c.json({ project, message: "Look de livestream aplicado." });
-  });
-  return app;
-}
-function toAlertEvent(input) {
-  return alertEventSchema.parse({
-    id: newId(),
-    t: input.t,
-    duration: input.duration ?? 4,
-    kind: input.kind,
-    name: input.name,
-    amount: input.amount ?? null,
-    message: input.message ?? null
-  });
-}
-async function updateLayer(store2, projectId, layerId, mutate) {
-  return store2.update(projectId, (project) => {
-    const layer = project.layers.find((item) => item.id === layerId);
-    if (!layer)
-      throw new HttpError(404, "No existe esa capa.");
-    try {
-      mutate(layer, project);
-    } catch (error) {
-      if (error instanceof HttpError)
-        throw error;
-      if (error instanceof Error)
-        throw new HttpError(400, error.message);
-      throw error;
-    }
-  });
-}
-function idOf(c) {
-  return uuidParam(c, "id");
-}
-function layerIds(c) {
-  return { id: uuidParam(c, "id"), layerId: uuidParam(c, "layerId") };
-}
-function messageIds(c) {
-  return { ...layerIds(c), messageId: uuidParam(c, "messageId") };
-}
-function sectorIds(c) {
-  return { ...layerIds(c), sectorId: uuidParam(c, "sectorId") };
-}
-function eventIds(c) {
-  return { ...layerIds(c), eventId: uuidParam(c, "eventId") };
-}
-function uuidParam(c, name) {
-  const value = c.req.param(name);
-  if (!value || !external_exports.string().uuid().safeParse(value).success)
-    throw new HttpError(400, "Identificador inv\xE1lido.");
-  return value;
-}
-async function jsonBody(c) {
-  const text = await c.req.text();
-  if (!text.trim())
-    return {};
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new HttpError(400, "JSON inv\xE1lido.");
-  }
-}
-function parse(schema, value) {
-  const result = schema.safeParse(value);
-  if (!result.success) {
-    const issue = result.error.issues[0];
-    const where = issue?.path.join(".");
-    throw new HttpError(400, where ? `${where}: ${issue.message}` : "Datos inv\xE1lidos.");
-  }
-  return result.data;
-}
-function removeUndefined2(value) {
-  const out = {};
-  for (const [key, item] of Object.entries(value)) {
-    if (item !== void 0)
-      out[key] = item;
-  }
-  return out;
-}
-function videoExtension(mime, filename) {
-  const ext = import_node_path4.default.extname(filename).toLowerCase();
-  if (EXT_KIND[ext]?.kind === "video")
-    return ext;
-  return VIDEO_EXT[mime] ?? null;
-}
-function mimeOf(c) {
-  return (c.req.header("content-type") ?? "").split(";", 1)[0]?.trim().toLowerCase() ?? "";
-}
-function fileName(c, fallback) {
-  const header = c.req.header("x-filename");
-  if (!header)
-    return fallback;
-  try {
-    return import_node_path4.default.basename(decodeURIComponent(header)) || fallback;
-  } catch {
-    return fallback;
-  }
-}
-function tooBig(limit2) {
-  const gb = limit2 / GB;
-  const amount = gb >= 1 ? `${gb} GB` : `${Math.round(limit2 / (1024 * 1024))} MB`;
-  return `El archivo es demasiado grande. El m\xE1ximo es ${amount}.`;
-}
-function classifyAsset(mime, filename) {
-  const ext = import_node_path4.default.extname(filename).toLowerCase();
-  const mimeExt = IMAGE_EXT[mime] ?? VIDEO_EXT[mime] ?? AUDIO_EXT[mime];
-  const chosen = (mimeExt ? EXT_KIND[mimeExt] : void 0) ?? EXT_KIND[ext];
-  if (!chosen)
-    throw new HttpError(415, "Incorpor\xE1 PNG, JPEG, WebP, GIF, MP4, WebM, MOV, MKV, AVI, MP3, WAV, M4A, AAC, OGG o FLAC.");
-  const limit2 = chosen.kind === "video" ? MAX_VIDEO : chosen.kind === "audio" ? MAX_AUDIO : MAX_IMAGE;
-  return { ext: mimeExt || ext, mime: mimeExt ? mime : chosen.mime, kind: chosen.kind, limit: limit2 };
-}
-function displayName(value, max) {
-  const name = value.replace(/[\\/\u0000-\u001f]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
-  if (!name)
-    throw new HttpError(400, "El nombre no puede quedar vac\xEDo.");
-  return name;
-}
-function assetLabel(filename) {
-  const base = import_node_path4.default.basename(filename).trim();
-  return (base || "Sin nombre").slice(0, 160);
-}
-async function rememberAsset(store2, id, assetId, file, mime, kind, filename) {
-  return store2.update(id, (draft) => {
-    if (Object.keys(draft.assets).length >= 400)
-      throw new HttpError(400, "Este proyecto ya tiene 400 archivos.");
-    draft.assets[assetId] = assetSchema.parse({ file, mimeType: mime, name: assetLabel(filename), kind });
-  });
-}
-async function saveAsset(store2, id, assetId, body, kind, filename) {
-  const file = `${assetId}${kind.ext}`;
-  const dir = import_node_path4.default.join(store2.dir(id), "assets");
-  await (0, import_promises4.mkdir)(dir, { recursive: true });
-  const dest = import_node_path4.default.join(dir, file);
-  await writeLimited(body, dest, kind.limit);
-  try {
-    return { project: await rememberAsset(store2, id, assetId, file, kind.mime, kind.kind, filename) };
-  } catch (error) {
-    await (0, import_promises4.rm)(dest, { force: true });
-    throw error;
-  }
-}
-function applyLogo(draft, input) {
-  const images = Object.entries(draft.assets).filter(([, asset]) => asset.kind === "image");
-  let layer = draft.layers.find((item) => item.type === "watermark");
-  if (!layer) {
-    if (draft.layers.length >= 24)
-      throw new HttpError(400, "M\xE1ximo de 24 capas.");
-    layer = createLayer("watermark");
-    draft.layers.push(layer);
-  }
-  let assetId = layer.watermark?.assetId ?? null;
-  if (input.assetId) {
-    const asset = draft.assets[input.assetId];
-    if (!asset || asset.kind !== "image")
-      throw new HttpError(400, "Esa imagen no est\xE1 incorporada en el proyecto.");
-    assetId = input.assetId;
-  } else if (!assetId) {
-    if (images.length !== 1)
-      throw new HttpError(400, "Incorpor\xE1 una imagen y eleg\xED cu\xE1l es el logo.");
-    assetId = images[0]?.[0] ?? null;
-  }
-  layer.watermark = { assetId };
-  if (input.start != null || input.end != null) {
-    if (input.end === null && input.start == null) {
-      layer.timeRange = null;
-    } else {
-      const start = input.start ?? layer.timeRange?.start ?? 0;
-      const end = input.end == null ? draft.duration > start ? draft.duration : start + 1 : input.end;
-      if (end <= start)
-        throw new HttpError(400, "El logo termina antes de aparecer.");
-      layer.timeRange = { start, end };
-    }
-  }
-  if (input.spin)
-    layer.animation = "spin";
-  if (input.rotate != null)
-    layer.transform = { ...layer.transform, rotate: input.rotate };
-  const parsed = layerSchema.safeParse(clampLayer(layer));
-  if (!parsed.success)
-    throw new HttpError(400, "No se pudo aplicar el logo.");
-  Object.assign(layer, parsed.data);
-}
-function rejectLength(c, limit2) {
-  const length = Number(c.req.header("content-length"));
-  if (Number.isFinite(length) && length > limit2)
-    throw new HttpError(413, tooBig(limit2));
-}
-async function writeLimited(body, dest, limit2) {
-  if (!body)
-    throw new HttpError(400, "Falta el archivo.");
-  const out = (0, import_node_fs2.createWriteStream)(dest, { highWaterMark: 1024 * 1024 });
-  const reader = body.getReader();
-  let total = 0;
-  try {
-    for (; ; ) {
-      const { done, value } = await reader.read();
-      if (done)
-        break;
-      total += value.byteLength;
-      if (total > limit2)
-        throw new HttpError(413, tooBig(limit2));
-      if (!out.write(value))
-        await (0, import_node_events.once)(out, "drain");
-    }
-    out.end();
-    await (0, import_promises5.finished)(out);
-  } catch (error) {
-    out.destroy();
-    await (0, import_promises4.rm)(dest, { force: true });
-    if (error instanceof HttpError)
-      throw error;
-    const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
-    if (code === "ENOSPC")
-      throw new HttpError(400, "No hay espacio en el disco para guardar este archivo.");
-    throw error;
-  }
-}
-async function serveFile(c, file, mime) {
-  const info = await (0, import_promises4.stat)(file).catch(() => null);
-  if (!info?.isFile())
-    throw new HttpError(404, "No est\xE1 el archivo.");
-  const size = info.size;
-  const range = c.req.header("range");
-  c.header("Accept-Ranges", "bytes");
-  c.header("Content-Type", mime);
-  c.header("Cache-Control", "no-cache");
-  if (!range) {
-    c.header("Content-Length", String(size));
-    return c.body(import_node_stream.Readable.toWeb((0, import_node_fs2.createReadStream)(file)));
-  }
-  const match2 = /^bytes=(\d*)-(\d*)$/.exec(range.trim());
-  if (!match2)
-    return c.body("Rango inv\xE1lido", 416);
-  let start = match2[1] ? Number(match2[1]) : 0;
-  let end = match2[2] ? Number(match2[2]) : size - 1;
-  if (!match2[1] && match2[2]) {
-    start = Math.max(0, size - Number(match2[2]));
-    end = size - 1;
-  }
-  if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= size) {
-    c.header("Content-Range", `bytes */${size}`);
-    return c.body(null, 416);
-  }
-  end = Math.min(end, size - 1);
-  c.header("Content-Range", `bytes ${start}-${end}/${size}`);
-  c.header("Content-Length", String(end - start + 1));
-  return c.body(import_node_stream.Readable.toWeb((0, import_node_fs2.createReadStream)(file, { start, end })), 206);
-}
-
-// apps/server/dist/store.js
-var import_promises6 = require("node:fs/promises");
-var import_node_path5 = __toESM(require("node:path"), 1);
-
 // node_modules/.pnpm/is-node-process@1.2.0/node_modules/is-node-process/lib/index.mjs
 function isNodeProcess() {
   if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
@@ -49867,6 +49060,18 @@ async function resolveBlobAuth(options) {
   }
   throw new BlobError(
     "No blob credentials found. Pass a `token` option, set `BLOB_READ_WRITE_TOKEN`, or use `oidcToken` (or `VERCEL_OIDC_TOKEN`) with `storeId` or `BLOB_STORE_ID`."
+  );
+}
+function getReadWriteBlobTokenFromOptionsOrEnv(options) {
+  if (options == null ? void 0 : options.token) {
+    return options.token;
+  }
+  const readWrite = readEnv2("BLOB_READ_WRITE_TOKEN");
+  if (readWrite) {
+    return readWrite;
+  }
+  throw new BlobError(
+    "No read-write token found. Either configure the `BLOB_READ_WRITE_TOKEN` environment variable, or pass a `token` option to your calls."
   );
 }
 var BlobError = class extends Error {
@@ -51115,7 +50320,7 @@ function createPutMethod({
   getPresignedUrlPayload,
   extraChecks
 }) {
-  return async function put2(pathname2, body, optionsInput) {
+  return async function put3(pathname2, body, optionsInput) {
     var _a32;
     if (!body) {
       throw new BlobError("body is required");
@@ -51192,8 +50397,403 @@ function createPutMethod({
 var MAX_PRESIGN_CACHE_CONTROL_MAX_AGE_SECONDS = 365 * 24 * 60 * 60;
 var utf8Encoder = new TextEncoder();
 
-// node_modules/.pnpm/@vercel+blob@2.9.0/node_modules/@vercel/blob/dist/index.js
+// node_modules/.pnpm/@vercel+blob@2.9.0/node_modules/@vercel/blob/dist/client.js
+var crypto3 = __toESM(require("crypto"), 1);
 var import_undici2 = __toESM(require_undici(), 1);
+function createPutExtraChecks(methodName) {
+  return function extraChecks(options) {
+    if (!options.token.startsWith("vercel_blob_client_")) {
+      throw new BlobError(`${methodName} must be called with a client token`);
+    }
+    if (
+      // @ts-expect-error -- Runtime check for DX.
+      options.addRandomSuffix !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.allowOverwrite !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.cacheControlMaxAge !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.ttlDays !== void 0
+    ) {
+      throw new BlobError(
+        `${methodName} doesn't allow \`addRandomSuffix\`, \`cacheControlMaxAge\`, \`allowOverwrite\` or \`ttlDays\`. Configure these options at the server side when generating client tokens.`
+      );
+    }
+  };
+}
+var put = createPutMethod({
+  allowedOptions: ["contentType"],
+  extraChecks: createPutExtraChecks("client/`put`")
+});
+var createMultipartUpload2 = createCreateMultipartUploadMethod({
+  allowedOptions: ["contentType"],
+  extraChecks: createPutExtraChecks("client/`createMultipartUpload`")
+});
+var createMultipartUploader = createCreateMultipartUploaderMethod(
+  {
+    allowedOptions: ["contentType"],
+    extraChecks: createPutExtraChecks("client/`createMultipartUpload`")
+  }
+);
+var uploadPart2 = createUploadPartMethod({
+  allowedOptions: ["contentType"],
+  extraChecks: createPutExtraChecks("client/`multipartUpload`")
+});
+var completeMultipartUpload2 = createCompleteMultipartUploadMethod(
+  {
+    allowedOptions: ["contentType"],
+    extraChecks: createPutExtraChecks("client/`completeMultipartUpload`")
+  }
+);
+var upload = createPutMethod({
+  allowedOptions: ["contentType"],
+  extraChecks(options) {
+    if (options.handleUploadUrl === void 0) {
+      throw new BlobError(
+        "client/`upload` requires the 'handleUploadUrl' parameter"
+      );
+    }
+    if (
+      // @ts-expect-error -- Runtime check for DX.
+      options.addRandomSuffix !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.allowOverwrite !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.cacheControlMaxAge !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.ifMatch !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.ttlDays !== void 0
+    ) {
+      throw new BlobError(
+        "client/`upload` doesn't allow `addRandomSuffix`, `cacheControlMaxAge`, `allowOverwrite`, `ifMatch` or `ttlDays`. Configure these options at the server side when generating client tokens."
+      );
+    }
+  },
+  async getToken(pathname2, options) {
+    var _a4, _b2;
+    return retrieveClientToken({
+      handleUploadUrl: options.handleUploadUrl,
+      pathname: pathname2,
+      clientPayload: (_a4 = options.clientPayload) != null ? _a4 : null,
+      multipart: (_b2 = options.multipart) != null ? _b2 : false,
+      headers: options.headers
+    });
+  }
+});
+var uploadPresigned = createPutMethod({
+  allowedOptions: ["contentType"],
+  extraChecks(options) {
+    if (options.handleUploadUrl === void 0) {
+      throw new BlobError(
+        "client/`upload` requires the 'handleUploadUrl' parameter"
+      );
+    }
+    if (
+      // @ts-expect-error -- Runtime check for DX.
+      options.addRandomSuffix !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.allowOverwrite !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.cacheControlMaxAge !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.ifMatch !== void 0 || // @ts-expect-error -- Runtime check for DX.
+      options.ttlDays !== void 0
+    ) {
+      throw new BlobError(
+        "client/`uploadPresigned` doesn't allow `addRandomSuffix`, `cacheControlMaxAge`, `allowOverwrite`, `ifMatch` or `ttlDays`. Configure these options at the server side when generating presigned URLs."
+      );
+    }
+  },
+  async getPresignedUrlPayload(pathname2, options) {
+    var _a4, _b2;
+    return retrievePresignedUrlPayload({
+      pathname: pathname2,
+      handleUploadUrl: options.handleUploadUrl,
+      clientPayload: (_a4 = options.clientPayload) != null ? _a4 : null,
+      multipart: (_b2 = options.multipart) != null ? _b2 : false,
+      headers: options.headers
+    });
+  }
+});
+async function importKey(token) {
+  return globalThis.crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(token),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign", "verify"]
+  );
+}
+async function signPayload(payload, token) {
+  if (!globalThis.crypto) {
+    return crypto3.createHmac("sha256", token).update(payload).digest("hex");
+  }
+  const signature = await globalThis.crypto.subtle.sign(
+    "HMAC",
+    await importKey(token),
+    new TextEncoder().encode(payload)
+  );
+  return Buffer.from(new Uint8Array(signature)).toString("hex");
+}
+async function verifyCallbackSignature({
+  token,
+  signature,
+  body
+}) {
+  const secret = token;
+  if (!globalThis.crypto) {
+    const digest = crypto3.createHmac("sha256", secret).update(body).digest("hex");
+    const digestBuffer = Buffer.from(digest);
+    const signatureBuffer = Buffer.from(signature);
+    return digestBuffer.length === signatureBuffer.length && crypto3.timingSafeEqual(digestBuffer, signatureBuffer);
+  }
+  const verified = await globalThis.crypto.subtle.verify(
+    "HMAC",
+    await importKey(token),
+    // @ts-expect-error Buffer is compatible with BufferSource at runtime
+    hexToArrayByte(signature),
+    new TextEncoder().encode(body)
+  );
+  return verified;
+}
+function hexToArrayByte(input) {
+  if (input.length % 2 !== 0) {
+    throw new RangeError("Expected string to be an even number of characters");
+  }
+  const view = new Uint8Array(input.length / 2);
+  for (let i = 0; i < input.length; i += 2) {
+    view[i / 2] = Number.parseInt(input.substring(i, i + 2), 16);
+  }
+  return Buffer.from(view);
+}
+var EventTypes = {
+  generateClientToken: "blob.generate-client-token",
+  generatePresignedUrl: "blob.generate-presigned-url",
+  uploadCompleted: "blob.upload-completed"
+};
+async function handleUpload({
+  token,
+  request,
+  body,
+  onBeforeGenerateToken,
+  onUploadCompleted
+}) {
+  var _a4, _b2, _c, _d;
+  const resolvedToken = getReadWriteBlobTokenFromOptionsOrEnv({ token });
+  const type = body.type;
+  switch (type) {
+    case "blob.generate-client-token": {
+      const { pathname: pathname2, clientPayload, multipart } = body.payload;
+      const payload = await onBeforeGenerateToken(
+        pathname2,
+        clientPayload,
+        multipart
+      );
+      const tokenPayload = (_a4 = payload.tokenPayload) != null ? _a4 : clientPayload;
+      const { callbackUrl: providedCallbackUrl, ...tokenOptions } = payload;
+      let callbackUrl = providedCallbackUrl;
+      if (onUploadCompleted && !callbackUrl) {
+        callbackUrl = getCallbackUrl(request);
+      }
+      if (!onUploadCompleted && callbackUrl) {
+        console.warn(
+          "callbackUrl was provided but onUploadCompleted is not defined. The callback will not be handled."
+        );
+      }
+      const oneHourInSeconds = 60 * 60;
+      const now = /* @__PURE__ */ new Date();
+      const validUntil = (_b2 = payload.validUntil) != null ? _b2 : now.setSeconds(now.getSeconds() + oneHourInSeconds);
+      return {
+        type,
+        clientToken: await generateClientTokenFromReadWriteToken({
+          ...tokenOptions,
+          token: resolvedToken,
+          pathname: pathname2,
+          onUploadCompleted: callbackUrl ? {
+            callbackUrl,
+            tokenPayload
+          } : void 0,
+          validUntil
+        })
+      };
+    }
+    case "blob.upload-completed": {
+      const signatureHeader = "x-vercel-signature";
+      const signature = "credentials" in request ? (_c = request.headers.get(signatureHeader)) != null ? _c : "" : (_d = request.headers[signatureHeader]) != null ? _d : "";
+      if (!signature) {
+        throw new BlobError("Missing callback signature");
+      }
+      const isVerified = await verifyCallbackSignature({
+        token: resolvedToken,
+        signature,
+        body: JSON.stringify(body)
+      });
+      if (!isVerified) {
+        throw new BlobError("Invalid callback signature");
+      }
+      if (onUploadCompleted) {
+        await onUploadCompleted({
+          ...body.payload,
+          blob: toPutBlobResult(
+            body.payload.blob
+          )
+        });
+      }
+      return { type, response: "ok" };
+    }
+    default:
+      throw new BlobError("Invalid event type");
+  }
+}
+async function retrieveClientToken(options) {
+  const { handleUploadUrl, pathname: pathname2 } = options;
+  const url = isAbsoluteUrl(handleUploadUrl) ? handleUploadUrl : toAbsoluteUrl(handleUploadUrl);
+  const event = {
+    type: EventTypes.generateClientToken,
+    payload: {
+      pathname: pathname2,
+      clientPayload: options.clientPayload,
+      multipart: options.multipart
+    }
+  };
+  const res = await (0, import_undici2.fetch)(url, {
+    method: "POST",
+    body: JSON.stringify(event),
+    headers: {
+      "content-type": "application/json",
+      ...options.headers
+    },
+    signal: options.abortSignal
+  });
+  if (!res.ok) {
+    throw new BlobError("Failed to  retrieve the client token");
+  }
+  try {
+    const { clientToken } = await res.json();
+    return clientToken;
+  } catch {
+    throw new BlobError("Failed to retrieve the client token");
+  }
+}
+async function retrievePresignedUrlPayload(options) {
+  const { handleUploadUrl, pathname: pathname2 } = options;
+  const url = isAbsoluteUrl(handleUploadUrl) ? handleUploadUrl : toAbsoluteUrl(handleUploadUrl);
+  const event = {
+    type: EventTypes.generatePresignedUrl,
+    payload: {
+      pathname: pathname2,
+      clientPayload: options.clientPayload,
+      multipart: options.multipart
+    }
+  };
+  const res = await (0, import_undici2.fetch)(url, {
+    method: "POST",
+    body: JSON.stringify(event),
+    headers: {
+      "content-type": "application/json",
+      ...options.headers
+    },
+    signal: options.abortSignal
+  });
+  if (!res.ok) {
+    throw new BlobError("Failed to retrieve the presigned URL");
+  }
+  try {
+    const { presignedUrlPayload } = await res.json();
+    if (presignedUrlPayload) {
+      return presignedUrlPayload;
+    }
+    throw new BlobError("Missing presignedUrlPayload");
+  } catch (error) {
+    if (error instanceof BlobError) {
+      throw error;
+    }
+    throw new BlobError("Failed to retrieve the presigned URL");
+  }
+}
+function toAbsoluteUrl(url) {
+  return new URL(url, location.href).href;
+}
+function isAbsoluteUrl(url) {
+  try {
+    return Boolean(new URL(url));
+  } catch {
+    return false;
+  }
+}
+async function generateClientTokenFromReadWriteToken({
+  token,
+  ...argsWithoutToken
+}) {
+  var _a4;
+  if (typeof window !== "undefined") {
+    throw new BlobError(
+      '"generateClientTokenFromReadWriteToken" must be called from a server environment'
+    );
+  }
+  if (argsWithoutToken.ifMatch && argsWithoutToken.allowOverwrite === false) {
+    throw new BlobError(
+      "ifMatch and allowOverwrite: false are contradictory. ifMatch is used for conditional overwrites, which requires allowOverwrite to be true."
+    );
+  }
+  if (argsWithoutToken.ifMatch && argsWithoutToken.allowOverwrite === void 0) {
+    argsWithoutToken.allowOverwrite = true;
+  }
+  const timestamp = /* @__PURE__ */ new Date();
+  timestamp.setSeconds(timestamp.getSeconds() + 30);
+  const readWriteToken = getReadWriteBlobTokenFromOptionsOrEnv({ token });
+  const storeId = parseStoreIdFromReadWriteToken(readWriteToken) || null;
+  if (!storeId) {
+    throw new BlobError(
+      token ? "Invalid `token` parameter" : "Invalid `BLOB_READ_WRITE_TOKEN`"
+    );
+  }
+  const payload = Buffer.from(
+    JSON.stringify({
+      ...argsWithoutToken,
+      validUntil: (_a4 = argsWithoutToken.validUntil) != null ? _a4 : timestamp.getTime()
+    })
+  ).toString("base64");
+  const securedKey = await signPayload(payload, readWriteToken);
+  if (!securedKey) {
+    throw new BlobError("Unable to sign client token");
+  }
+  return `vercel_blob_client_${storeId}_${Buffer.from(
+    `${securedKey}.${payload}`
+  ).toString("base64")}`;
+}
+function getCallbackUrl(request) {
+  const reqPath = getPathFromRequestUrl(request.url);
+  if (!reqPath) {
+    console.warn(
+      "onUploadCompleted provided but no callbackUrl could be determined. Please provide a callbackUrl in onBeforeGenerateToken or set the VERCEL_BLOB_CALLBACK_URL environment variable."
+    );
+    return void 0;
+  }
+  if (process.env.VERCEL_BLOB_CALLBACK_URL) {
+    return `${process.env.VERCEL_BLOB_CALLBACK_URL}${reqPath}`;
+  }
+  if (process.env.VERCEL !== "1") {
+    console.warn(
+      "onUploadCompleted provided but no callbackUrl could be determined. Please provide a callbackUrl in onBeforeGenerateToken or set the VERCEL_BLOB_CALLBACK_URL environment variable."
+    );
+    return void 0;
+  }
+  if (process.env.VERCEL_ENV === "preview") {
+    if (process.env.VERCEL_BRANCH_URL) {
+      return `https://${process.env.VERCEL_BRANCH_URL}${reqPath}`;
+    }
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}${reqPath}`;
+    }
+  }
+  if (process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}${reqPath}`;
+  }
+  return void 0;
+}
+function getPathFromRequestUrl(url) {
+  try {
+    const parsedUrl = new URL(url, "https://dummy.com");
+    return parsedUrl.pathname + parsedUrl.search;
+  } catch {
+    return null;
+  }
+}
+
+// node_modules/.pnpm/@vercel+blob@2.9.0/node_modules/@vercel/blob/dist/index.js
+var import_undici3 = __toESM(require_undici(), 1);
 async function del(urlOrPathname, options) {
   const urls = Array.isArray(urlOrPathname) ? urlOrPathname : [urlOrPathname];
   if ((options == null ? void 0 : options.ifMatch) && urls.length > 1) {
@@ -51275,7 +50875,7 @@ async function get(urlOrPathname, options) {
     url.searchParams.set("cache", "0");
     fetchUrl = url.toString();
   }
-  const response = await (0, import_undici2.fetch)(fetchUrl, {
+  const response = await (0, import_undici3.fetch)(fetchUrl, {
     method: "GET",
     headers: requestHeaders,
     signal: options.abortSignal
@@ -51381,7 +50981,7 @@ function mapBlobResult(blobResult) {
     etag: blobResult.etag
   };
 }
-var put = createPutMethod({
+var put2 = createPutMethod({
   allowedOptions: [
     "cacheControlMaxAge",
     "addRandomSuffix",
@@ -51391,7 +50991,7 @@ var put = createPutMethod({
     "ttlDays"
   ]
 });
-var createMultipartUpload2 = createCreateMultipartUploadMethod({
+var createMultipartUpload3 = createCreateMultipartUploadMethod({
   allowedOptions: [
     "cacheControlMaxAge",
     "addRandomSuffix",
@@ -51401,7 +51001,7 @@ var createMultipartUpload2 = createCreateMultipartUploadMethod({
     "ttlDays"
   ]
 });
-var createMultipartUploader = createCreateMultipartUploaderMethod({
+var createMultipartUploader2 = createCreateMultipartUploaderMethod({
   allowedOptions: [
     "cacheControlMaxAge",
     "addRandomSuffix",
@@ -51411,7 +51011,7 @@ var createMultipartUploader = createCreateMultipartUploaderMethod({
     "ttlDays"
   ]
 });
-var uploadPart2 = createUploadPartMethod({
+var uploadPart3 = createUploadPartMethod({
   allowedOptions: [
     "cacheControlMaxAge",
     "addRandomSuffix",
@@ -51419,7 +51019,7 @@ var uploadPart2 = createUploadPartMethod({
     "contentType"
   ]
 });
-var completeMultipartUpload2 = createCompleteMultipartUploadMethod({
+var completeMultipartUpload3 = createCompleteMultipartUploadMethod({
   allowedOptions: [
     "cacheControlMaxAge",
     "addRandomSuffix",
@@ -51443,7 +51043,7 @@ function pathname(id) {
 }
 async function writeProjectBlob(id, json) {
   try {
-    await put(pathname(id), json, {
+    await put2(pathname(id), json, {
       access: access(),
       addRandomSuffix: false,
       allowOverwrite: true,
@@ -51480,7 +51080,864 @@ async function deleteProjectBlob(id) {
   await del(pathname(id));
 }
 
+// apps/server/dist/app.js
+var GB = 1024 * 1024 * 1024;
+var MAX_VIDEO = 256 * GB;
+var MAX_IMAGE = 1 * GB;
+var MAX_AUDIO = 8 * GB;
+var IMAGE_EXT = {
+  "image/png": ".png",
+  "image/jpeg": ".jpg",
+  "image/webp": ".webp",
+  "image/gif": ".gif"
+};
+var AUDIO_EXT = {
+  "audio/mpeg": ".mp3",
+  "audio/mp3": ".mp3",
+  "audio/wav": ".wav",
+  "audio/x-wav": ".wav",
+  "audio/wave": ".wav",
+  "audio/mp4": ".m4a",
+  "audio/x-m4a": ".m4a",
+  "audio/aac": ".aac",
+  "audio/ogg": ".ogg",
+  "audio/flac": ".flac",
+  "audio/webm": ".weba",
+  "audio/aiff": ".aiff",
+  "audio/x-aiff": ".aiff",
+  "audio/opus": ".opus"
+};
+var EXT_KIND = {
+  ".png": { mime: "image/png", kind: "image" },
+  ".jpg": { mime: "image/jpeg", kind: "image" },
+  ".jpeg": { mime: "image/jpeg", kind: "image" },
+  ".webp": { mime: "image/webp", kind: "image" },
+  ".gif": { mime: "image/gif", kind: "image" },
+  ".mp4": { mime: "video/mp4", kind: "video" },
+  ".webm": { mime: "video/webm", kind: "video" },
+  ".mov": { mime: "video/quicktime", kind: "video" },
+  ".mkv": { mime: "video/x-matroska", kind: "video" },
+  ".avi": { mime: "video/x-msvideo", kind: "video" },
+  ".m4v": { mime: "video/mp4", kind: "video" },
+  ".mpg": { mime: "video/mpeg", kind: "video" },
+  ".mpeg": { mime: "video/mpeg", kind: "video" },
+  ".ts": { mime: "video/mp2t", kind: "video" },
+  ".mts": { mime: "video/mp2t", kind: "video" },
+  ".m2ts": { mime: "video/mp2t", kind: "video" },
+  ".wmv": { mime: "video/x-ms-wmv", kind: "video" },
+  ".flv": { mime: "video/x-flv", kind: "video" },
+  ".mp3": { mime: "audio/mpeg", kind: "audio" },
+  ".wav": { mime: "audio/wav", kind: "audio" },
+  ".m4a": { mime: "audio/mp4", kind: "audio" },
+  ".aac": { mime: "audio/aac", kind: "audio" },
+  ".ogg": { mime: "audio/ogg", kind: "audio" },
+  ".flac": { mime: "audio/flac", kind: "audio" },
+  ".weba": { mime: "audio/webm", kind: "audio" },
+  ".aiff": { mime: "audio/aiff", kind: "audio" },
+  ".aif": { mime: "audio/aiff", kind: "audio" },
+  ".opus": { mime: "audio/opus", kind: "audio" }
+};
+var VIDEO_EXT = {
+  "video/mp4": ".mp4",
+  "video/webm": ".webm",
+  "video/quicktime": ".mov",
+  "video/x-matroska": ".mkv",
+  "video/x-msvideo": ".avi",
+  "video/x-m4v": ".m4v",
+  "video/mpeg": ".mpg",
+  "video/mp2t": ".ts",
+  "video/x-ms-wmv": ".wmv",
+  "video/x-flv": ".flv"
+};
+function createApp(store2) {
+  const app = new Hono3();
+  app.use("*", async (c, next) => {
+    c.header("Access-Control-Allow-Origin", "*");
+    c.header("Access-Control-Allow-Headers", "content-type, x-filename");
+    c.header("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
+    c.header("Access-Control-Allow-Private-Network", "true");
+    if (c.req.method === "OPTIONS")
+      return c.body(null, 204);
+    await next();
+  });
+  app.onError((error, c) => {
+    if (error instanceof HttpError)
+      return c.json({ error: error.message }, error.status);
+    console.error(error);
+    return c.json({ error: "Error interno" }, 500);
+  });
+  app.get("/api/healthz", (c) => c.json({ status: "ok", nan: nanConfigured() }));
+  app.get("/api/projects", async (c) => c.json({ projects: await store2.list() }));
+  app.post("/api/projects", async (c) => {
+    const input = parse(external_exports.object({ name: external_exports.string().max(120).optional() }), await jsonBody(c));
+    const project = await store2.create(input.name ?? "Sin t\xEDtulo");
+    return c.json({ project, message: "Proyecto creado." }, 201);
+  });
+  app.get("/api/projects/:id", async (c) => c.json({ project: await store2.read(idOf(c)) }));
+  app.delete("/api/projects/:id", async (c) => {
+    await store2.remove(idOf(c));
+    return c.json({ ok: true });
+  });
+  app.get("/api/projects/:id/events", async (c) => {
+    const id = idOf(c);
+    const encoder = new TextEncoder();
+    let closed = false;
+    let unsubscribe = () => {
+    };
+    let timer;
+    const stop = () => {
+      if (closed)
+        return;
+      closed = true;
+      if (timer)
+        clearInterval(timer);
+      unsubscribe();
+    };
+    const stream = new ReadableStream({
+      async start(controller) {
+        const send = (data) => {
+          if (closed)
+            return;
+          try {
+            controller.enqueue(encoder.encode(`data: ${data}
+
+`));
+          } catch {
+            stop();
+          }
+        };
+        const finish = () => {
+          stop();
+          try {
+            controller.close();
+          } catch {
+          }
+        };
+        try {
+          send(JSON.stringify({ type: "project", project: await store2.read(id) }));
+        } catch (error) {
+          const message = error instanceof HttpError ? error.message : "No se pudo abrir el proyecto.";
+          send(JSON.stringify({ type: "error", error: message }));
+          finish();
+          return;
+        }
+        if (closed)
+          return;
+        unsubscribe = store2.subscribe(id, send);
+        timer = setInterval(() => send(JSON.stringify({ type: "ping" })), 15e3);
+        if (closed)
+          stop();
+        c.req.raw.signal.addEventListener("abort", finish);
+      },
+      cancel() {
+        stop();
+      }
+    });
+    return new Response(stream, {
+      headers: {
+        "content-type": "text/event-stream",
+        "cache-control": "no-cache",
+        connection: "keep-alive"
+      }
+    });
+  });
+  app.post("/api/blob/client", async (c) => {
+    if (!blobEnabled())
+      throw new HttpError(503, "Falta conectar el almacenamiento de Vercel para subir videos grandes.");
+    const body = await c.req.json();
+    try {
+      const result = await handleUpload({
+        body,
+        request: c.req.raw,
+        onBeforeGenerateToken: async (pathname2) => {
+          if (!pathname2.startsWith("chiwt/"))
+            throw new HttpError(400, "Ruta inv\xE1lida.");
+          return {
+            allowedContentTypes: ["video/*", "image/*", "audio/*"],
+            addRandomSuffix: true,
+            maximumSizeInBytes: MAX_VIDEO
+          };
+        }
+      });
+      return c.json(result);
+    } catch (error) {
+      if (error instanceof HttpError)
+        throw error;
+      const message = error instanceof Error ? error.message : "No se pudo preparar la subida.";
+      throw new HttpError(500, message);
+    }
+  });
+  app.post("/api/projects/:id/video/remote", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({
+      url: external_exports.string().url().max(2048),
+      fileName: external_exports.string().min(1).max(240),
+      mimeType: external_exports.string().min(1).max(120),
+      duration: external_exports.number().min(0).max(24 * 60 * 60)
+    }), await jsonBody(c));
+    const url = new URL(input.url);
+    if (!url.protocol.startsWith("https") || !url.hostname.endsWith(".blob.vercel-storage.com")) {
+      throw new HttpError(400, "El video no qued\xF3 en el almacenamiento.");
+    }
+    const project = await store2.update(id, (draft) => {
+      draft.video = {
+        fileName: displayName(input.fileName, 240),
+        mimeType: input.mimeType,
+        playbackFile: input.url
+      };
+      draft.duration = input.duration;
+      draft.videoToken = crypto.randomUUID();
+      draft.transcript = null;
+    });
+    return c.json({ project, message: "Video cargado." });
+  });
+  app.post("/api/projects/:id/video", async (c) => {
+    const id = idOf(c);
+    await store2.read(id);
+    const ext = videoExtension(mimeOf(c), fileName(c, ""));
+    if (!ext)
+      throw new HttpError(415, "Us\xE1 MP4, WebM, MOV, MKV o AVI.");
+    rejectLength(c, MAX_VIDEO);
+    const dir = store2.dir(id);
+    await (0, import_promises4.mkdir)(dir, { recursive: true });
+    const tmp = import_node_path4.default.join(dir, `.upload-${crypto.randomUUID()}${ext}`);
+    const original = fileName(c, `video${ext}`);
+    const named = import_node_path4.default.extname(original).toLowerCase() === ext ? original : `${original}${ext}`;
+    try {
+      await writeLimited(c.req.raw.body, tmp, MAX_VIDEO);
+      const project = await attachVideoFile(store2, id, tmp, named, true);
+      return c.json({ project, message: "Video cargado." });
+    } finally {
+      await (0, import_promises4.rm)(tmp, { force: true });
+    }
+  });
+  app.post("/api/projects/:id/video/import", async (c) => {
+    const id = idOf(c);
+    await store2.read(id);
+    const input = parse(external_exports.object({ path: external_exports.string().min(1) }), await jsonBody(c));
+    const resolved = import_node_path4.default.resolve(input.path);
+    const info = await (0, import_promises4.stat)(resolved).catch(() => null);
+    if (!info?.isFile())
+      throw new HttpError(400, "La ruta no es un archivo de video.");
+    if (info.size > MAX_VIDEO)
+      throw new HttpError(413, tooBig(MAX_VIDEO));
+    const project = await attachVideoFile(store2, id, resolved, import_node_path4.default.basename(resolved), false);
+    return c.json({ project, message: "Video importado." });
+  });
+  app.patch("/api/projects/:id/video", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({ fileName: external_exports.string() }), await jsonBody(c));
+    const project = await store2.update(id, (draft) => {
+      if (!draft.video)
+        throw new HttpError(400, "Este proyecto no tiene video.");
+      draft.video.fileName = displayName(input.fileName, 240);
+    });
+    return c.json({ project, message: "Nombre del video actualizado." });
+  });
+  app.get("/api/projects/:id/video", async (c) => {
+    const project = await store2.read(idOf(c));
+    if (!project.video)
+      throw new HttpError(404, "Este proyecto no tiene video.");
+    if (project.video.playbackFile.startsWith("https://"))
+      return c.redirect(project.video.playbackFile, 302);
+    return serveFile(c, safeFile(store2.dir(project.id), project.video.playbackFile), project.video.mimeType);
+  });
+  app.post("/api/projects/:id/assets", async (c) => {
+    const id = idOf(c);
+    await store2.read(id);
+    const named = fileName(c, "archivo");
+    const kind = classifyAsset(mimeOf(c), named);
+    rejectLength(c, kind.limit);
+    const assetId = newId();
+    const saved = await saveAsset(store2, id, assetId, c.req.raw.body, kind, named);
+    return c.json({ project: saved.project, assetId, message: "Archivo incorporado al proyecto." });
+  });
+  app.post("/api/projects/:id/assets/import", async (c) => {
+    const id = idOf(c);
+    await store2.read(id);
+    const input = parse(external_exports.object({ path: external_exports.string().min(1) }), await jsonBody(c));
+    const resolved = import_node_path4.default.resolve(input.path);
+    const info = await (0, import_promises4.stat)(resolved).catch(() => null);
+    if (!info?.isFile())
+      throw new HttpError(400, "La ruta no es un archivo.");
+    const named = import_node_path4.default.basename(resolved);
+    const kind = classifyAsset("", named);
+    if (info.size > kind.limit)
+      throw new HttpError(413, tooBig(kind.limit));
+    const assetId = newId();
+    const file = `${assetId}${kind.ext}`;
+    const dir = import_node_path4.default.join(store2.dir(id), "assets");
+    await (0, import_promises4.mkdir)(dir, { recursive: true });
+    await (0, import_promises4.copyFile)(resolved, import_node_path4.default.join(dir, file));
+    const project = await rememberAsset(store2, id, assetId, file, kind.mime, kind.kind, named);
+    return c.json({ project, assetId, message: "Archivo incorporado al proyecto." });
+  });
+  app.patch("/api/projects/:id/assets/:assetId", async (c) => {
+    const id = idOf(c);
+    const assetId = c.req.param("assetId");
+    const input = parse(external_exports.object({ name: external_exports.string() }), await jsonBody(c));
+    const project = await store2.update(id, (draft) => {
+      const asset = assetId ? draft.assets[assetId] : void 0;
+      if (!asset)
+        throw new HttpError(404, "No existe ese archivo.");
+      if (asset.kind !== "video")
+        throw new HttpError(400, "Solo se le cambia el nombre a un video.");
+      asset.name = displayName(input.name, 160);
+    });
+    return c.json({ project, message: "Nombre del video actualizado." });
+  });
+  app.delete("/api/projects/:id/assets/:assetId", async (c) => {
+    const id = idOf(c);
+    const assetId = c.req.param("assetId");
+    const current = await store2.read(id);
+    const asset = assetId ? current.assets[assetId] : void 0;
+    if (!asset)
+      throw new HttpError(404, "No existe ese archivo.");
+    await (0, import_promises4.rm)(safeFile(import_node_path4.default.join(store2.dir(id), "assets"), asset.file), { force: true });
+    const project = await store2.update(id, (draft) => {
+      delete draft.assets[assetId];
+      for (const layer of draft.layers) {
+        if (layer.watermark?.assetId === assetId)
+          layer.watermark = { assetId: null };
+      }
+    });
+    return c.json({ project, message: "Archivo quitado del proyecto." });
+  });
+  app.post("/api/projects/:id/assets/:assetId/use-as-video", async (c) => {
+    const id = idOf(c);
+    const assetId = c.req.param("assetId");
+    const current = await store2.read(id);
+    const asset = assetId ? current.assets[assetId] : void 0;
+    if (!asset)
+      throw new HttpError(404, "No existe ese archivo.");
+    if (asset.kind !== "video")
+      throw new HttpError(400, "Ese archivo no es un video.");
+    const ext = import_node_path4.default.extname(asset.file);
+    const named = asset.name.toLowerCase().endsWith(ext.toLowerCase()) ? asset.name : `${asset.name}${ext}`;
+    const project = await attachVideoFile(store2, id, safeFile(import_node_path4.default.join(store2.dir(id), "assets"), asset.file), named, false);
+    return c.json({ project, message: "Ese video qued\xF3 como la l\xEDnea de tiempo." });
+  });
+  app.post("/api/projects/:id/logo", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({
+      assetId: external_exports.string().uuid().optional(),
+      start: external_exports.number().min(0).optional(),
+      end: external_exports.number().min(0).nullable().optional(),
+      spin: external_exports.boolean().optional(),
+      rotate: external_exports.number().min(-180).max(180).optional()
+    }), await jsonBody(c));
+    const project = await store2.update(id, (draft) => {
+      applyLogo(draft, input);
+    });
+    return c.json({ project, message: "Logo vinculado al proyecto." });
+  });
+  app.get("/api/projects/:id/assets/:assetId", async (c) => {
+    const project = await store2.read(idOf(c));
+    const assetId = c.req.param("assetId");
+    const asset = assetId ? project.assets[assetId] : void 0;
+    if (!asset)
+      throw new HttpError(404, "No existe ese archivo.");
+    return serveFile(c, safeFile(import_node_path4.default.join(store2.dir(project.id), "assets"), asset.file), asset.mimeType);
+  });
+  app.post("/api/projects/:id/layers", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({
+      type: layerTypeSchema,
+      name: external_exports.string().max(80).optional(),
+      ratePerMinute: external_exports.number().min(1).max(360).optional(),
+      instruction: external_exports.string().max(2e3).optional(),
+      lutPreset: external_exports.enum(["sepia", "contrast", "vintage", "noir", "cyberpunk"]).optional()
+    }), await jsonBody(c));
+    const project = await store2.update(id, (draft) => {
+      if (draft.layers.length >= 24)
+        throw new HttpError(400, "M\xE1ximo de 24 capas.");
+      draft.layers.push(createLayer(input.type, input));
+    });
+    return c.json({ project, message: "Capa agregada." });
+  });
+  app.patch("/api/projects/:id/layers/:layerId", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const patch = parse(layerPatchSchema, await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer) => {
+      const next = applyLayerPatch(layer, patch);
+      Object.assign(layer, next);
+    });
+    return c.json({ project, message: "Capa actualizada." });
+  });
+  app.delete("/api/projects/:id/layers/:layerId", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const project = await store2.update(id, (draft) => {
+      const before = draft.layers.length;
+      draft.layers = draft.layers.filter((layer) => layer.id !== layerId);
+      if (draft.layers.length === before)
+        throw new HttpError(404, "No existe esa capa.");
+    });
+    return c.json({ project, message: "Capa eliminada." });
+  });
+  app.post("/api/projects/:id/layers/:layerId/messages", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({ messages: external_exports.array(manualMessageInputSchema).min(1).max(200) }), await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      const stamped = input.messages.map((message, index) => stampManual(message, layer.chat.messages.length + index));
+      layer.chat.messages = [...layer.chat.messages, ...stamped].sort((a, b) => a.t - b.t).slice(0, 5e3);
+    });
+    return c.json({ project, message: "Mensajes manuales agregados." });
+  });
+  app.patch("/api/projects/:id/layers/:layerId/messages/:messageId", async (c) => {
+    const ids = messageIds(c);
+    const patch = parse(external_exports.object({
+      text: external_exports.string().min(1).max(300).optional(),
+      username: external_exports.string().min(1).max(40).optional(),
+      color: external_exports.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+      t: external_exports.number().min(0).optional(),
+      locked: external_exports.boolean().optional()
+    }).strict(), await jsonBody(c));
+    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      const message = layer.chat.messages.find((item) => item.id === ids.messageId);
+      if (!message)
+        throw new HttpError(404, "No existe ese mensaje.");
+      if (patch.text != null)
+        message.text = patch.text.trim();
+      if (patch.username != null)
+        message.username = patch.username.trim();
+      if (patch.color)
+        message.color = patch.color;
+      if (patch.t != null)
+        message.t = patch.t;
+      if (patch.locked != null)
+        message.locked = patch.locked;
+      const parsed = timedMessageSchema.safeParse(message);
+      if (!parsed.success)
+        throw new HttpError(400, "Mensaje inv\xE1lido.");
+      Object.assign(message, parsed.data);
+      layer.chat.messages.sort((a, b) => a.t - b.t);
+    });
+    return c.json({ project, message: "Mensaje actualizado." });
+  });
+  app.delete("/api/projects/:id/layers/:layerId/messages/:messageId", async (c) => {
+    const ids = messageIds(c);
+    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      const before = layer.chat.messages.length;
+      layer.chat.messages = layer.chat.messages.filter((message) => message.id !== ids.messageId);
+      if (layer.chat.messages.length === before)
+        throw new HttpError(404, "No existe ese mensaje.");
+    });
+    return c.json({ project, message: "Mensaje eliminado." });
+  });
+  app.post("/api/projects/:id/layers/:layerId/messages/lock", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({ from: external_exports.number().min(0), to: external_exports.number().min(0), locked: external_exports.boolean() }), await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      for (const message of layer.chat.messages) {
+        if (message.t >= input.from && message.t <= input.to)
+          message.locked = input.locked;
+      }
+    });
+    return c.json({ project, message: input.locked ? "Mensajes bloqueados." : "Mensajes desbloqueados." });
+  });
+  app.post("/api/projects/:id/layers/:layerId/sectors", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(sectorInputSchema, await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer, draft) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      if (input.end != null && input.end <= input.start)
+        throw new HttpError(400, "El sector termina antes de empezar.");
+      if (sectorsOverlap(layer.chat.sectors, input, draft.duration))
+        throw new HttpError(400, "Ese sector se superpone con otro.");
+      layer.chat.sectors.push({
+        id: newId(),
+        name: input.name,
+        start: input.start,
+        end: input.end,
+        instruction: input.instruction ?? "",
+        ratePerMinute: input.ratePerMinute
+      });
+      layer.chat.sectors.sort((a, b) => a.start - b.start);
+    });
+    return c.json({ project, message: "Sector creado." });
+  });
+  app.patch("/api/projects/:id/layers/:layerId/sectors/:sectorId", async (c) => {
+    const ids = sectorIds(c);
+    const patch = parse(external_exports.object({
+      name: external_exports.string().min(1).max(80).optional(),
+      start: external_exports.number().min(0).optional(),
+      end: external_exports.number().min(0).nullable().optional(),
+      instruction: external_exports.string().max(2e3).optional(),
+      ratePerMinute: external_exports.number().min(1).max(360).optional()
+    }).strict(), await jsonBody(c));
+    const project = await updateLayer(store2, ids.id, ids.layerId, (layer, draft) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      const sector = layer.chat.sectors.find((item) => item.id === ids.sectorId);
+      if (!sector)
+        throw new HttpError(404, "No existe ese sector.");
+      const next = { ...sector, ...removeUndefined2(patch) };
+      if (next.end != null && next.end <= next.start)
+        throw new HttpError(400, "El sector termina antes de empezar.");
+      if (sectorsOverlap(layer.chat.sectors, next, draft.duration))
+        throw new HttpError(400, "Ese sector se superpone con otro.");
+      Object.assign(sector, next);
+      layer.chat.sectors.sort((a, b) => a.start - b.start);
+    });
+    return c.json({ project, message: "Sector actualizado." });
+  });
+  app.delete("/api/projects/:id/layers/:layerId/sectors/:sectorId", async (c) => {
+    const ids = sectorIds(c);
+    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
+      if (!layer.chat)
+        throw new HttpError(400, "Esa capa no es un chat.");
+      const before = layer.chat.sectors.length;
+      layer.chat.sectors = layer.chat.sectors.filter((sector) => sector.id !== ids.sectorId);
+      if (layer.chat.sectors.length === before)
+        throw new HttpError(404, "No existe ese sector.");
+    });
+    return c.json({ project, message: "Sector eliminado." });
+  });
+  app.post("/api/projects/:id/layers/:layerId/generate-chat", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({
+      sectorId: external_exports.string().uuid().optional(),
+      instruction: external_exports.string().max(2e3).optional()
+    }), await jsonBody(c));
+    return c.json(await generateChat(store2, id, layerId, input));
+  });
+  app.post("/api/projects/:id/layers/:layerId/alerts", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({
+      mode: external_exports.enum(["append", "replace"]).default("append"),
+      events: external_exports.array(alertInputSchema).min(1).max(200)
+    }), await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer) => {
+      if (!layer.alerts)
+        throw new HttpError(400, "Esa capa no es de alertas.");
+      const events = input.events.map(toAlertEvent);
+      layer.alerts = (input.mode === "replace" ? events : [...layer.alerts, ...events]).sort((a, b) => a.t - b.t).slice(0, 500);
+    });
+    return c.json({ project, message: "Alertas programadas." });
+  });
+  app.delete("/api/projects/:id/layers/:layerId/alerts/:eventId", async (c) => {
+    const ids = eventIds(c);
+    const project = await updateLayer(store2, ids.id, ids.layerId, (layer) => {
+      if (!layer.alerts)
+        throw new HttpError(400, "Esa capa no es de alertas.");
+      const before = layer.alerts.length;
+      layer.alerts = layer.alerts.filter((event) => event.id !== ids.eventId);
+      if (layer.alerts.length === before)
+        throw new HttpError(404, "No existe esa alerta.");
+    });
+    return c.json({ project, message: "Alerta eliminada." });
+  });
+  app.post("/api/projects/:id/layers/:layerId/generate-alerts", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({
+      count: external_exports.number().int().min(1).max(30).optional(),
+      instruction: external_exports.string().max(2e3).optional()
+    }), await jsonBody(c));
+    return c.json(await generateAlerts(store2, id, layerId, input));
+  });
+  app.put("/api/projects/:id/layers/:layerId/subtitle-cues", async (c) => {
+    const { id, layerId } = layerIds(c);
+    const input = parse(external_exports.object({
+      cues: external_exports.array(external_exports.object({
+        id: external_exports.string().uuid().optional(),
+        text: external_exports.string().max(500),
+        start: external_exports.number().min(0),
+        end: external_exports.number().min(0)
+      })).max(2e3)
+    }), await jsonBody(c));
+    const project = await updateLayer(store2, id, layerId, (layer) => {
+      if (!layer.subtitle)
+        throw new HttpError(400, "Esa capa no es de subt\xEDtulos.");
+      layer.subtitle = { ...layer.subtitle, cues: normalizeSubtitleCues(input.cues) };
+    });
+    return c.json({ project, message: "Subt\xEDtulos actualizados." });
+  });
+  app.post("/api/projects/:id/transcribe", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({ force: external_exports.boolean().optional() }), await jsonBody(c));
+    return c.json(await transcribeProject(store2, id, input.force ?? false));
+  });
+  app.post("/api/projects/:id/prompt", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({
+      prompt: external_exports.string().min(1).max(2e3),
+      history: external_exports.array(external_exports.object({
+        role: external_exports.enum(["user", "agent"]),
+        text: external_exports.string().max(800)
+      })).max(12).optional()
+    }), await jsonBody(c));
+    return c.json(await applyPrompt(store2, id, input.prompt, input.history ?? []));
+  });
+  app.post("/api/projects/:id/livestream", async (c) => {
+    const id = idOf(c);
+    const input = parse(external_exports.object({
+      lut: external_exports.enum(["sepia", "contrast", "vintage", "noir", "cyberpunk"]).optional(),
+      ratePerMinute: external_exports.number().min(1).max(360).optional(),
+      instruction: external_exports.string().max(2e3).optional()
+    }), await jsonBody(c));
+    const project = await store2.update(id, (draft) => applyLivestream(draft, input));
+    return c.json({ project, message: "Look de livestream aplicado." });
+  });
+  return app;
+}
+function toAlertEvent(input) {
+  return alertEventSchema.parse({
+    id: newId(),
+    t: input.t,
+    duration: input.duration ?? 4,
+    kind: input.kind,
+    name: input.name,
+    amount: input.amount ?? null,
+    message: input.message ?? null
+  });
+}
+async function updateLayer(store2, projectId, layerId, mutate) {
+  return store2.update(projectId, (project) => {
+    const layer = project.layers.find((item) => item.id === layerId);
+    if (!layer)
+      throw new HttpError(404, "No existe esa capa.");
+    try {
+      mutate(layer, project);
+    } catch (error) {
+      if (error instanceof HttpError)
+        throw error;
+      if (error instanceof Error)
+        throw new HttpError(400, error.message);
+      throw error;
+    }
+  });
+}
+function idOf(c) {
+  return uuidParam(c, "id");
+}
+function layerIds(c) {
+  return { id: uuidParam(c, "id"), layerId: uuidParam(c, "layerId") };
+}
+function messageIds(c) {
+  return { ...layerIds(c), messageId: uuidParam(c, "messageId") };
+}
+function sectorIds(c) {
+  return { ...layerIds(c), sectorId: uuidParam(c, "sectorId") };
+}
+function eventIds(c) {
+  return { ...layerIds(c), eventId: uuidParam(c, "eventId") };
+}
+function uuidParam(c, name) {
+  const value = c.req.param(name);
+  if (!value || !external_exports.string().uuid().safeParse(value).success)
+    throw new HttpError(400, "Identificador inv\xE1lido.");
+  return value;
+}
+async function jsonBody(c) {
+  const text = await c.req.text();
+  if (!text.trim())
+    return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new HttpError(400, "JSON inv\xE1lido.");
+  }
+}
+function parse(schema, value) {
+  const result = schema.safeParse(value);
+  if (!result.success) {
+    const issue = result.error.issues[0];
+    const where = issue?.path.join(".");
+    throw new HttpError(400, where ? `${where}: ${issue.message}` : "Datos inv\xE1lidos.");
+  }
+  return result.data;
+}
+function removeUndefined2(value) {
+  const out = {};
+  for (const [key, item] of Object.entries(value)) {
+    if (item !== void 0)
+      out[key] = item;
+  }
+  return out;
+}
+function videoExtension(mime, filename) {
+  const ext = import_node_path4.default.extname(filename).toLowerCase();
+  if (EXT_KIND[ext]?.kind === "video")
+    return ext;
+  return VIDEO_EXT[mime] ?? null;
+}
+function mimeOf(c) {
+  return (c.req.header("content-type") ?? "").split(";", 1)[0]?.trim().toLowerCase() ?? "";
+}
+function fileName(c, fallback) {
+  const header = c.req.header("x-filename");
+  if (!header)
+    return fallback;
+  try {
+    return import_node_path4.default.basename(decodeURIComponent(header)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+function tooBig(limit2) {
+  const gb = limit2 / GB;
+  const amount = gb >= 1 ? `${gb} GB` : `${Math.round(limit2 / (1024 * 1024))} MB`;
+  return `El archivo es demasiado grande. El m\xE1ximo es ${amount}.`;
+}
+function classifyAsset(mime, filename) {
+  const ext = import_node_path4.default.extname(filename).toLowerCase();
+  const mimeExt = IMAGE_EXT[mime] ?? VIDEO_EXT[mime] ?? AUDIO_EXT[mime];
+  const chosen = (mimeExt ? EXT_KIND[mimeExt] : void 0) ?? EXT_KIND[ext];
+  if (!chosen)
+    throw new HttpError(415, "Incorpor\xE1 PNG, JPEG, WebP, GIF, MP4, WebM, MOV, MKV, AVI, MP3, WAV, M4A, AAC, OGG o FLAC.");
+  const limit2 = chosen.kind === "video" ? MAX_VIDEO : chosen.kind === "audio" ? MAX_AUDIO : MAX_IMAGE;
+  return { ext: mimeExt || ext, mime: mimeExt ? mime : chosen.mime, kind: chosen.kind, limit: limit2 };
+}
+function displayName(value, max) {
+  const name = value.replace(/[\\/\u0000-\u001f]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+  if (!name)
+    throw new HttpError(400, "El nombre no puede quedar vac\xEDo.");
+  return name;
+}
+function assetLabel(filename) {
+  const base = import_node_path4.default.basename(filename).trim();
+  return (base || "Sin nombre").slice(0, 160);
+}
+async function rememberAsset(store2, id, assetId, file, mime, kind, filename) {
+  return store2.update(id, (draft) => {
+    if (Object.keys(draft.assets).length >= 400)
+      throw new HttpError(400, "Este proyecto ya tiene 400 archivos.");
+    draft.assets[assetId] = assetSchema.parse({ file, mimeType: mime, name: assetLabel(filename), kind });
+  });
+}
+async function saveAsset(store2, id, assetId, body, kind, filename) {
+  const file = `${assetId}${kind.ext}`;
+  const dir = import_node_path4.default.join(store2.dir(id), "assets");
+  await (0, import_promises4.mkdir)(dir, { recursive: true });
+  const dest = import_node_path4.default.join(dir, file);
+  await writeLimited(body, dest, kind.limit);
+  try {
+    return { project: await rememberAsset(store2, id, assetId, file, kind.mime, kind.kind, filename) };
+  } catch (error) {
+    await (0, import_promises4.rm)(dest, { force: true });
+    throw error;
+  }
+}
+function applyLogo(draft, input) {
+  const images = Object.entries(draft.assets).filter(([, asset]) => asset.kind === "image");
+  let layer = draft.layers.find((item) => item.type === "watermark");
+  if (!layer) {
+    if (draft.layers.length >= 24)
+      throw new HttpError(400, "M\xE1ximo de 24 capas.");
+    layer = createLayer("watermark");
+    draft.layers.push(layer);
+  }
+  let assetId = layer.watermark?.assetId ?? null;
+  if (input.assetId) {
+    const asset = draft.assets[input.assetId];
+    if (!asset || asset.kind !== "image")
+      throw new HttpError(400, "Esa imagen no est\xE1 incorporada en el proyecto.");
+    assetId = input.assetId;
+  } else if (!assetId) {
+    if (images.length !== 1)
+      throw new HttpError(400, "Incorpor\xE1 una imagen y eleg\xED cu\xE1l es el logo.");
+    assetId = images[0]?.[0] ?? null;
+  }
+  layer.watermark = { assetId };
+  if (input.start != null || input.end != null) {
+    if (input.end === null && input.start == null) {
+      layer.timeRange = null;
+    } else {
+      const start = input.start ?? layer.timeRange?.start ?? 0;
+      const end = input.end == null ? draft.duration > start ? draft.duration : start + 1 : input.end;
+      if (end <= start)
+        throw new HttpError(400, "El logo termina antes de aparecer.");
+      layer.timeRange = { start, end };
+    }
+  }
+  if (input.spin)
+    layer.animation = "spin";
+  if (input.rotate != null)
+    layer.transform = { ...layer.transform, rotate: input.rotate };
+  const parsed = layerSchema.safeParse(clampLayer(layer));
+  if (!parsed.success)
+    throw new HttpError(400, "No se pudo aplicar el logo.");
+  Object.assign(layer, parsed.data);
+}
+function rejectLength(c, limit2) {
+  const length = Number(c.req.header("content-length"));
+  if (Number.isFinite(length) && length > limit2)
+    throw new HttpError(413, tooBig(limit2));
+}
+async function writeLimited(body, dest, limit2) {
+  if (!body)
+    throw new HttpError(400, "Falta el archivo.");
+  const out = (0, import_node_fs2.createWriteStream)(dest, { highWaterMark: 1024 * 1024 });
+  const reader = body.getReader();
+  let total = 0;
+  try {
+    for (; ; ) {
+      const { done, value } = await reader.read();
+      if (done)
+        break;
+      total += value.byteLength;
+      if (total > limit2)
+        throw new HttpError(413, tooBig(limit2));
+      if (!out.write(value))
+        await (0, import_node_events.once)(out, "drain");
+    }
+    out.end();
+    await (0, import_promises5.finished)(out);
+  } catch (error) {
+    out.destroy();
+    await (0, import_promises4.rm)(dest, { force: true });
+    if (error instanceof HttpError)
+      throw error;
+    const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
+    if (code === "ENOSPC")
+      throw new HttpError(400, "No hay espacio en el disco para guardar este archivo.");
+    throw error;
+  }
+}
+async function serveFile(c, file, mime) {
+  const info = await (0, import_promises4.stat)(file).catch(() => null);
+  if (!info?.isFile())
+    throw new HttpError(404, "No est\xE1 el archivo.");
+  const size = info.size;
+  const range = c.req.header("range");
+  c.header("Accept-Ranges", "bytes");
+  c.header("Content-Type", mime);
+  c.header("Cache-Control", "no-cache");
+  if (!range) {
+    c.header("Content-Length", String(size));
+    return c.body(import_node_stream.Readable.toWeb((0, import_node_fs2.createReadStream)(file)));
+  }
+  const match2 = /^bytes=(\d*)-(\d*)$/.exec(range.trim());
+  if (!match2)
+    return c.body("Rango inv\xE1lido", 416);
+  let start = match2[1] ? Number(match2[1]) : 0;
+  let end = match2[2] ? Number(match2[2]) : size - 1;
+  if (!match2[1] && match2[2]) {
+    start = Math.max(0, size - Number(match2[2]));
+    end = size - 1;
+  }
+  if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= size) {
+    c.header("Content-Range", `bytes */${size}`);
+    return c.body(null, 416);
+  }
+  end = Math.min(end, size - 1);
+  c.header("Content-Range", `bytes ${start}-${end}/${size}`);
+  c.header("Content-Length", String(end - start + 1));
+  return c.body(import_node_stream.Readable.toWeb((0, import_node_fs2.createReadStream)(file, { start, end })), 206);
+}
+
 // apps/server/dist/store.js
+var import_promises6 = require("node:fs/promises");
+var import_node_path5 = __toESM(require("node:path"), 1);
 var ProjectStore = class {
   root;
   tails = /* @__PURE__ */ new Map();

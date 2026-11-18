@@ -29,6 +29,8 @@ import {
   type Project,
 } from '@chiwt/schema';
 import { applyLivestream, applyPrompt, generateAlerts, generateChat, transcribeProject } from './generate.js';
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
+import { blobEnabled } from './blob.js';
 import { HttpError } from './http.js';
 import { nanConfigured } from './nan.js';
 import type { ProjectStore } from './store.js';
@@ -195,6 +197,55 @@ export function createApp(store: ProjectStore): Hono {
     });
   });
 
+  app.post('/api/blob/client', async (c) => {
+    if (!blobEnabled()) throw new HttpError(503, 'Falta conectar el almacenamiento de Vercel para subir videos grandes.');
+    const body = await c.req.json() as HandleUploadBody;
+    try {
+      const result = await handleUpload({
+        body,
+        request: c.req.raw,
+        onBeforeGenerateToken: async (pathname) => {
+          if (!pathname.startsWith('chiwt/')) throw new HttpError(400, 'Ruta inválida.');
+          return {
+            allowedContentTypes: ['video/*', 'image/*', 'audio/*'],
+            addRandomSuffix: true,
+            maximumSizeInBytes: MAX_VIDEO,
+          };
+        },
+      });
+      return c.json(result);
+    } catch (error) {
+      if (error instanceof HttpError) throw error;
+      const message = error instanceof Error ? error.message : 'No se pudo preparar la subida.';
+      throw new HttpError(500, message);
+    }
+  });
+
+  app.post('/api/projects/:id/video/remote', async (c) => {
+    const id = idOf(c);
+    const input = parse(z.object({
+      url: z.string().url().max(2048),
+      fileName: z.string().min(1).max(240),
+      mimeType: z.string().min(1).max(120),
+      duration: z.number().min(0).max(24 * 60 * 60),
+    }), await jsonBody(c));
+    const url = new URL(input.url);
+    if (!url.protocol.startsWith('https') || !url.hostname.endsWith('.blob.vercel-storage.com')) {
+      throw new HttpError(400, 'El video no quedó en el almacenamiento.');
+    }
+    const project = await store.update(id, (draft) => {
+      draft.video = {
+        fileName: displayName(input.fileName, 240),
+        mimeType: input.mimeType,
+        playbackFile: input.url,
+      };
+      draft.duration = input.duration;
+      draft.videoToken = crypto.randomUUID();
+      draft.transcript = null;
+    });
+    return c.json({ project, message: 'Video cargado.' });
+  });
+
   app.post('/api/projects/:id/video', async (c) => {
     const id = idOf(c);
     await store.read(id);
@@ -240,6 +291,7 @@ export function createApp(store: ProjectStore): Hono {
   app.get('/api/projects/:id/video', async (c) => {
     const project = await store.read(idOf(c));
     if (!project.video) throw new HttpError(404, 'Este proyecto no tiene video.');
+    if (project.video.playbackFile.startsWith('https://')) return c.redirect(project.video.playbackFile, 302);
     return serveFile(c, safeFile(store.dir(project.id), project.video.playbackFile), project.video.mimeType);
   });
 

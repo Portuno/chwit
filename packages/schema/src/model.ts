@@ -187,7 +187,7 @@ export const projectSchema = z.object({
   video: z.object({
     fileName: z.string().min(1).max(240),
     mimeType: z.string().min(1).max(120),
-    playbackFile: z.string().min(1).max(240),
+    playbackFile: z.string().min(1).max(2048),
   }).nullable(),
   assets: z.record(z.string(), assetSchema),
   transcript: z.object({
