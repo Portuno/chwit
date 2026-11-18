@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "chiwt": {
+      "command": "node",
+      "args": ["/home/lautaro/chiwt/packages/mcp/dist/index.js"],
+      "env": {
+        "CHWIT_API": "http://127.0.0.1:8787"
+      }
+    }
+  }
+}
