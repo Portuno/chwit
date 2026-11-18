@@ -1,0 +1,12 @@
+{
+  "name": "chiwt",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@12.8.1",
+  "scripts": {
+    "build": "pnpm --filter @chiwt/schema build && pnpm --filter @chiwt/server build && pnpm --filter @chiwt/mcp build && pnpm --filter @chiwt/studio build",
+    "typecheck": "pnpm --filter @chiwt/schema build && pnpm -r typecheck",
+    "test": "pnpm --filter @chiwt/schema build && pnpm --filter @chiwt/schema test && pnpm --filter @chiwt/server test",
+    "dev": "pnpm --filter @chiwt/schema build && pnpm --parallel --filter @chiwt/schema --filter @chiwt/server --filter @chiwt/studio --filter @chiwt/mcp dev"
+  }
+}

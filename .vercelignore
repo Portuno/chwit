@@ -1,0 +1,14 @@
+node_modules
+data
+dist
+.env
+.env.*
+!.env.example
+.vercel
+.git
+.cursor
+*.jpeg
+*.mp4
+*.mov
+*.webm
+*.mkv

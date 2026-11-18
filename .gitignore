@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.vercel
+data
+*.tsbuildinfo
+.DS_Store
+*.local
+WhatsApp Image*.jpeg

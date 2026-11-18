@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm --filter @chiwt/schema build && pnpm --filter @chiwt/studio build",
+  "outputDirectory": "apps/studio/dist"
+}
