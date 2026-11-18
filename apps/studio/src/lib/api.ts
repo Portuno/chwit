@@ -25,12 +25,21 @@ export function apiUrl(path: string): string {
   return `${API_ORIGIN}${path}`;
 }
 
+function apiUnreachable(): ApiError {
+  const host = typeof location === 'undefined' ? '' : location.hostname;
+  const localPage = host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+  if (!localPage) {
+    return new ApiError('El navegador bloqueó este sitio al hablar con la API de tu computadora. Abrí el estudio en http://127.0.0.1:5173 con pnpm dev.', 0);
+  }
+  return new ApiError(`La API de Chiwt no responde en ${API_ORIGIN}. Iniciá el servidor con pnpm dev.`, 0);
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   let response: Response;
   try {
     response = await fetch(apiUrl(url), init);
   } catch {
-    throw new ApiError(`La API de Chiwt no responde en ${API_ORIGIN}. Iniciá el servidor con pnpm dev.`, 0);
+    throw apiUnreachable();
   }
   const data = await response.json().catch(() => null);
   if (!response.ok) {
